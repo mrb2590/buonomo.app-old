@@ -1,92 +1,175 @@
 <template>
-  <v-app>
+  <v-app :dark="darkMode">
     <v-navigation-drawer
       persistent
-      :mini-variant="miniVariant"
-      :clipped="clipped"
+      :mini-variant="miniDrawer"
       v-model="drawer"
       enable-resize-watcher
       fixed
       app
     >
+      <v-toolbar
+        flat
+        class="transparent"
+        v-if="signedIn"
+      >
+        <v-list>
+          <v-list-tile avatar to="/profile">
+            <v-list-tile-avatar>
+              <img src="https://randomuser.me/api/portraits/men/85.jpg">
+            </v-list-tile-avatar>
+
+            <v-list-tile-content>
+              <v-list-tile-title>{{ fullName }}</v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+        </v-list>
+      </v-toolbar>
       <v-list>
         <v-list-tile
           value="true"
-          v-for="(item, i) in items"
-          :key="i"
+          to="/signin"
+          v-if="!signedIn"
         >
           <v-list-tile-action>
-            <v-icon v-html="item.icon"></v-icon>
+            <v-icon>account_circle</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
-            <v-list-tile-title v-text="item.title"></v-list-tile-title>
+            <v-list-tile-title>Sign In</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+
+        <v-list-tile
+          value="true"
+          to="/signout"
+          v-if="signedIn"
+        >
+          <v-list-tile-action>
+            <v-icon>exit_to_app</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title>Sign Out</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+
+        <v-divider></v-divider>
+
+        <v-list-tile
+          value="true"
+          to="/"
+        >
+          <v-list-tile-action>
+            <v-icon>dashboard</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title>Home</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+
+        <v-list-tile
+          value="true"
+          to="/about"
+        >
+          <v-list-tile-action>
+            <v-icon>info</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title>About</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+
+        <v-list-tile
+          value="true"
+          to="/drive"
+        >
+          <v-list-tile-action>
+            <v-icon>folder_special</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title>Drive</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
-    <v-toolbar
-      app
-      :clipped-left="clipped"
-    >
+
+    <v-toolbar app color="primary">
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-      <v-btn icon @click.stop="miniVariant = !miniVariant">
-        <v-icon v-html="miniVariant ? 'chevron_right' : 'chevron_left'"></v-icon>
+      <v-btn icon @click.stop="miniDrawer = !miniDrawer">
+        <v-icon v-html="miniDrawer ? 'chevron_right' : 'chevron_left'"></v-icon>
       </v-btn>
-      <v-btn icon @click.stop="clipped = !clipped">
-        <v-icon>web</v-icon>
-      </v-btn>
-      <v-btn icon @click.stop="fixed = !fixed">
-        <v-icon>web</v-icon>
-      </v-btn>
-      <v-toolbar-title v-text="title"></v-toolbar-title>
+      <v-toolbar-title v-text="$route.meta.displayName"></v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn icon @click.stop="rightDrawer = !rightDrawer">
-        <v-icon>menu</v-icon>
+      <v-btn icon @click="darkMode = !darkMode">
+        <v-icon>invert_colors</v-icon>
       </v-btn>
     </v-toolbar>
-    <v-content>
-      <router-view/>
+
+    <v-content class="main-content">
+      <transition name="slide-fade">
+        <router-view/>
+      </transition>
     </v-content>
-    <v-navigation-drawer
-      temporary
-      :right="right"
-      v-model="rightDrawer"
-      fixed
-      app
-    >
-      <v-list>
-        <v-list-tile @click="right = !right">
-          <v-list-tile-action>
-            <v-icon>compare_arrows</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-title>Switch drawer (click me)</v-list-tile-title>
-        </v-list-tile>
-      </v-list>
-    </v-navigation-drawer>
-    <v-footer :fixed="fixed" app>
-      <span>&copy; 2017</span>
+
+    <v-footer class="pa-2" fixed app>
+      <div>&copy; {{ new Date().getFullYear() }}</div>
     </v-footer>
   </v-app>
 </template>
 
 <script>
+import appConfig from './app.config'
+import { authComputed, userComputed } from './state/helpers'
 
 export default {
   name: 'App',
+
+  page: {
+    // All subcomponent titles will be injected into this template.
+    titleTemplate (title) {
+      title = typeof title === 'function' ? title(this.$store) : title
+      this.title = title
+      return title ? `${title} | ${appConfig.title}` : appConfig.title
+    }
+  },
+
   data () {
     return {
-      clipped: false,
-      drawer: true,
-      fixed: false,
-      items: [{
-        icon: 'bubble_chart',
-        title: 'Inspire'
-      }],
-      miniVariant: false,
-      right: true,
-      rightDrawer: false,
-      title: 'Vuetify.js'
+      drawer: window.innerWidth >= 1264,
+      miniDrawer: false,
+      title: appConfig.title
+    }
+  },
+
+  computed: {
+    ...authComputed,
+    ...userComputed,
+
+    darkMode: {
+      get () {
+        return this.$store.state.preferences.darkMode
+      },
+      set (newValue) {
+        this.$store.commit('preferences/SET_DARK_MODE', newValue)
+      }
     }
   }
 }
 </script>
+
+<style lang="scss">
+@import './design/index';
+
+html {
+  overflow: auto;
+}
+a {
+  text-decoration: none;
+}
+a[class=""]:hover {
+  text-decoration: underline;
+}
+
+.main-content {
+  overflow: hidden;
+}
+</style>

@@ -1,19 +1,19 @@
 <template>
-  <div class="about">
-    <h1>This is an about page</h1>
+  <div class="404">
+    404
   </div>
 </template>
 
 <script>
 export default {
-  name: 'About',
+  name: 'NotFound',
 
   metaInfo: {
-    title: 'About',
+    title: 'Page Not Found',
     meta: [
       {
         name: 'description',
-        content: 'About MikeB.app.'
+        content: 'The page you requested was not found.'
       }
     ]
   }
