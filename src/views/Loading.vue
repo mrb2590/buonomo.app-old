@@ -1,9 +1,8 @@
 <template>
-  <div class="loading">
-    <v-progress-circular
-      indeterminate
-      color="secondary"
-    ></v-progress-circular>
+  <div class="loading center-align-outer">
+    <div class="center-align-inner">
+      <v-progress-circular indeterminate :size="50" :width="5" color="secondary"></v-progress-circular>
+    </div>
   </div>
 </template>
 
@@ -23,6 +22,6 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 
 </style>

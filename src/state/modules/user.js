@@ -1,5 +1,6 @@
 import axios from 'axios'
 import moment from 'moment'
+import lang from 'lodash/lang'
 
 var apiUrl = process.env.VUE_APP_API_URL
 
@@ -27,13 +28,13 @@ export const getters = {
 
 export const mutations = {
   SET_USER (state, newValue) {
-    state.user = newValue
+    state.user = lang.cloneDeep(newValue)
   }
 }
 
 export const actions = {
-  fetchUser ({ commit, state }) {
-    if (state.user) {
+  fetchUser ({ commit, state }, force = false) {
+    if (!force && state.user) {
       return
     }
     return axios.get(`${apiUrl}/v1/user`)

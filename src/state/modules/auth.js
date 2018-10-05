@@ -100,10 +100,7 @@ export const actions = {
   }
 }
 
-// ===
-// Private helpers
-// ===
-
+// Set auth headers for axios
 function setDefaultAuthHeaders (state) {
   axios.defaults.headers.common.Accept = 'application/json'
   axios.defaults.headers.common.Authorization = state.token

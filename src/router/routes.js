@@ -16,8 +16,10 @@ export default [
   {
     path: '/signin',
     name: 'signin',
-    displayName: 'Sign in',
     component: () => lazyLoadView(import(/* webpackChunkName: "auth" */ '../views/SignIn')),
+    meta: {
+      displayName: 'Sign In'
+    },
     beforeEnter (routeTo, routeFrom, next) {
       // If the user is already logged in
       if (store.getters['auth/signedIn']) {
@@ -27,7 +29,6 @@ export default [
         // Continue to the login page
         next()
       }
-      next()
     }
   },
   {

@@ -23,9 +23,22 @@ export const authMethods = mapActions('auth', ['signIn', 'signOut'])
 // User
 export const userComputed = {
   ...mapState('user', {
-    userProfile: state => state.user
+    user: state => state.user
   }),
   ...mapGetters('user', ['fullName', 'initials', 'formattedDates'])
 }
 
 export const userMethods = mapActions('user', ['fetchUser'])
+
+// Drive
+export const driveComputed = {
+  ...mapState('drive', {
+    openFolder: state => state.openFolder,
+    tree: state => state.tree
+  }),
+  ...mapGetters('drive', ['formatDate'])
+}
+
+export const driveMethods = mapActions('drive', [
+  'updateTree', 'fetchFolder', 'downloadFolder', 'downloadFile', 'addFolder'
+])

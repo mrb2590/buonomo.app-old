@@ -43,8 +43,6 @@ router.beforeEach((routeTo, routeFrom, next) => {
     // Pass the original route to the login component
     next({ name: 'signin', query: { redirectFrom: routeTo.fullPath } })
   }
-
-  next()
 })
 
 // After navigation is confirmed, but before resolving...

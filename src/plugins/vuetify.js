@@ -20,7 +20,10 @@ import {
   VTextField,
   VSwitch,
   VOverflowBtn,
-  VBtnToggle
+  VBtnToggle,
+  VAvatar,
+  VSpeedDial,
+  VMenu
 } from 'vuetify'
 import 'vuetify/src/stylus/app.styl'
 
@@ -44,7 +47,10 @@ Vue.use(Vuetify, {
     VTextField,
     VSwitch,
     VOverflowBtn,
-    VBtnToggle
+    VBtnToggle,
+    VAvatar,
+    VSpeedDial,
+    VMenu
   },
   theme: {
     primary: colors.green.base,
