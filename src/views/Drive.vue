@@ -1,11 +1,14 @@
 <template>
   <div class="drive">
     <div class="drive-container">
-      <div class="sidebar">
-        sidebar
+      <div class="sidebar" :class="{ open: sidebarOpen }">
+        <FolderTree v-if="tree" :folder="tree" :openFolder="openNewFolder"></FolderTree>
       </div>
       <div class="explorer">
         <v-toolbar flat transparent elevation="0" v-if="openFolder">
+          <v-btn-toggle>
+            <v-btn flat @click="sidebarOpen = !sidebarOpen"><v-icon>list</v-icon></v-btn>
+          </v-btn-toggle>
           <v-toolbar-title v-if="openFolder">{{ openFolder.name }}</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-btn-toggle>
@@ -21,10 +24,13 @@
             >
               <v-icon>expand_less</v-icon>
             </v-btn>
+            <v-btn flat
+              @click="openNewFolder(openFolder.id, true)"
+            >
+              <v-icon>refresh</v-icon>
+            </v-btn>
           </v-btn-toggle>
         </v-toolbar>
-        <div class="explorer-toolbar">
-        </div>
         <v-container>
           <v-layout row wrap v-if="openFolder">
             <v-flex xs12 sm12 md6 lg4 xl3
@@ -54,6 +60,7 @@
 <script>
 import File from '../components/File'
 import Folder from '../components/Folder'
+import FolderTree from '../components/FolderTree'
 import { userComputed, driveComputed, driveMethods } from '../state/helpers'
 
 export default {
@@ -70,10 +77,10 @@ export default {
   },
 
   data: () => ({
-    //
+    sidebarOpen: false
   }),
 
-  components: { File, Folder },
+  components: { File, Folder, FolderTree },
 
   computed: {
     ...driveComputed,
@@ -120,6 +127,12 @@ export default {
 .sidebar {
   width: 300px;
   padding: 8px;
+  overflow: auto;
+  height: calc(100vh - 100px);
+
+  > .folder-tree {
+    padding-left: 0;
+  }
 }
 .explorer {
   width: calc(100% - 300px);
