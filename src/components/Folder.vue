@@ -1,12 +1,12 @@
 <template>
-  <div class="folder" @dblclick="openNewFolder(folder.id, true, true)">
+  <div class="folder" @click="openNewFolder(folder.id, true, true)">
     <div class="ficon">
       <v-avatar color="primary">
-        <v-icon dark>folder</v-icon>
+        <v-icon>folder</v-icon>
       </v-avatar>
     </div>
     <div class="ftext">
-      <div class="subheading">{{ folder.name }}</div>
+      <div class="subheading" :title="folder.name">{{ folder.name }}</div>
       <div class="caption">100 MB</div>
     </div>
     <div class="fbtn">
@@ -16,6 +16,7 @@
         origin="top right"
         transition="scale-transition"
         min-width="150"
+        @click.native.stop
       >
         <v-btn
           slot="activator"
@@ -48,7 +49,7 @@
             :size="100"
             color="primary"
           >
-            <v-icon :size="80">folder</v-icon>
+            <v-icon :size="60">folder</v-icon>
           </v-avatar>
         </v-card-title>
 
