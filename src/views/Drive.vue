@@ -1,37 +1,39 @@
 <template>
   <div class="drive">
-    <div class="drive-container">
-      <div class="sidebar" :class="{ open: sidebarOpen }">
-        <FolderTree v-if="tree" :folder="tree" :openFolder="openNewFolder"></FolderTree>
+    <v-toolbar flat transparent elevation="0" v-if="openFolder">
+      <v-btn-toggle>
+        <v-btn flat @click="sidebarOpen = !sidebarOpen"><v-icon>list</v-icon></v-btn>
+      </v-btn-toggle>
+      <v-toolbar-title v-if="openFolder">{{ openFolder.name }}</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-btn-toggle>
+        <v-btn flat>
+          <v-icon>chevron_left</v-icon>
+        </v-btn>
+        <v-btn flat>
+          <v-icon>chevron_right</v-icon>
+        </v-btn>
+        <v-btn flat
+          @click="upFolder()"
+          :disabled="!openFolder.parent_id"
+        >
+          <v-icon>expand_less</v-icon>
+        </v-btn>
+        <v-btn flat
+          @click="openNewFolder(openFolder.id, true)"
+        >
+          <v-icon>refresh</v-icon>
+        </v-btn>
+      </v-btn-toggle>
+    </v-toolbar>
+    <div class="drive-container" :class="{ 'sidebar-open': sidebarOpen }">
+      <div class="sidebar">
+        <ul class="folder-tree">
+          <FolderTree v-if="tree" :folder="tree" :openFolder="openNewFolder"></FolderTree>
+        </ul>
       </div>
       <div class="explorer">
-        <v-toolbar flat transparent elevation="0" v-if="openFolder">
-          <v-btn-toggle>
-            <v-btn flat @click="sidebarOpen = !sidebarOpen"><v-icon>list</v-icon></v-btn>
-          </v-btn-toggle>
-          <v-toolbar-title v-if="openFolder">{{ openFolder.name }}</v-toolbar-title>
-          <v-spacer></v-spacer>
-          <v-btn-toggle>
-            <v-btn flat>
-              <v-icon>chevron_left</v-icon>
-            </v-btn>
-            <v-btn flat>
-              <v-icon>chevron_right</v-icon>
-            </v-btn>
-            <v-btn flat
-              @click="upFolder()"
-              :disabled="!openFolder.parent_id"
-            >
-              <v-icon>expand_less</v-icon>
-            </v-btn>
-            <v-btn flat
-              @click="openNewFolder(openFolder.id, true)"
-            >
-              <v-icon>refresh</v-icon>
-            </v-btn>
-          </v-btn-toggle>
-        </v-toolbar>
-        <v-container>
+        <v-container fluid>
           <v-layout row wrap v-if="openFolder">
             <v-flex xs12 sm12 md6 lg4 xl3
               v-for="(childFolder, index) in openFolder.children"
@@ -77,7 +79,7 @@ export default {
   },
 
   data: () => ({
-    sidebarOpen: false
+    sidebarOpen: true
   }),
 
   components: { File, Folder, FolderTree },
@@ -95,7 +97,9 @@ export default {
         folderId: folderId,
         force: force
       }).then(response => {
-        //
+        if (window.innerWidth < 600) {
+          this.sidebarOpen = false
+        }
       })
     },
 
@@ -114,55 +118,100 @@ export default {
 }
 </script>
 
+<style>
+.sidebar > .folder-tree > li {
+  border-left: 0 !important;
+}
+
+</style>
+
 <style lang="scss" scoped>
 .drive {
   height: 100%;
 }
+
 .drive-container {
+  position: relative;
   display: flex;
   height: 100%;
   align-items: stretch;
   align-content: stretch;
-}
-.sidebar {
-  width: 300px;
-  padding: 8px;
-  overflow: auto;
-  height: calc(100vh - 100px);
 
-  > .folder-tree {
-    padding-left: 0;
+  .sidebar {
+    transition: left 0.3s ease-in-out;
+    width: 300px;
+    left: -100%;
+    padding: 8px;
+    overflow: auto;
+    height: calc(100vh - 164px);
+    position: absolute;
+    background: #fafafa;
+    // border-right: 1px solid #e0e0e0;
+
+    > .folder-tree {
+      margin-left: 0;
+      padding-left: 0;
+    }
+  }
+
+  .explorer {
+    transition: left 0.3s ease-in-out;
+    width: 100%;
+    position: absolute;
+    overflow: auto;
+    left: 0;
+    height: 100%;
+
+    .container {
+      padding: 0 8px 8px;
+    }
   }
 }
-.explorer {
-  width: calc(100% - 300px);
 
-  .container {
-    padding: 0 8px 8px;
+.drive-container.sidebar-open {
+  .explorer {
+    width: calc(100% - 300px);
+    left:  300px;
   }
+  .sidebar {
+    left: 0;
+  }
+}
 
-  .v-toolbar {
-    background-color: transparent;
+.v-toolbar {
+  background-color: transparent;
+}
+
+.theme--dark {
+  .sidebar {
+    background: #303030;
+    // border-right: 1px solid #595959;
+  }
+}
+
+@media (max-width: 959px) and (min-width: 600px) {
+  .drive-container {
+    .sidebar {
+      height: calc(100vh - 148px);
+    }
   }
 }
 
 @media (max-width: 599px) {
-  .sidebar {
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    z-index: 10;
-    background-color: inherit;
-  }
-  .sidebar.open {
-    left: 0;
-  }
-  .explorer {
-    width: 100%;
+  .drive-container {
+    .explorer {
+      width: 100% !important;
+      left: 0 !important;
 
-    .container {
-      padding: 0;
+      .container {
+        padding: 0;
+      }
+    }
+
+    .sidebar {
+      height: calc(100vh - 148px);
+      width: 100%;
+      z-index: 2;
     }
   }
 }

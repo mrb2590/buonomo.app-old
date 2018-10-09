@@ -23,7 +23,8 @@ import {
   VBtnToggle,
   VAvatar,
   VSpeedDial,
-  VMenu
+  VMenu,
+  VDialog
 } from 'vuetify'
 import 'vuetify/src/stylus/app.styl'
 
@@ -50,7 +51,8 @@ Vue.use(Vuetify, {
     VBtnToggle,
     VAvatar,
     VSpeedDial,
-    VMenu
+    VMenu,
+    VDialog
   },
   theme: {
     primary: colors.green.base,

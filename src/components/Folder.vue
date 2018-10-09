@@ -28,7 +28,7 @@
           <v-list-tile
             v-for="(item, i) in items"
             :key="i"
-            @click="() => {}"
+            @click="showInfoDialog = true"
           >
             <v-list-tile-title>{{ item.title }}</v-list-tile-title>
             <v-icon>{{ item.icon }}</v-icon>
@@ -36,10 +36,50 @@
         </v-list>
       </v-menu>
     </div>
+
+    <v-dialog
+      v-model="showInfoDialog"
+      max-width="290"
+      :fullscreen="dialogFullscreen"
+    >
+      <v-card>
+        <v-card-title class="headline">
+          <v-avatar
+            :size="100"
+            color="primary"
+          >
+            <v-icon :size="80">folder</v-icon>
+          </v-avatar>
+        </v-card-title>
+
+        <v-card-title class="headline">
+        {{ folder.name }}</v-card-title>
+
+        <v-card-text class="folder-info">
+          <ul>
+            <li>Size: 100 MB</li>
+            <li>Owner: {{ folder.owned_by.first_name }} {{ folder.owned_by.last_name }}</li>
+          </ul>
+          <p>{{ folder.owned_by.first_name }} {{ folder.owned_by.last_name }} creeated this folder on {{ moment(folder.created_at).format('MMMM Do, YYYY') }}</p>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="green darken-1"
+            flat="flat"
+            @click="showInfoDialog = false"
+          >
+            Close
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script>
+import moment from 'moment'
 import { driveComputed, driveMethods } from '../state/helpers'
 
 export default {
@@ -48,7 +88,10 @@ export default {
   props: [ 'folder', 'openNewFolder' ],
 
   data: () => ({
+    showInfoDialog: false,
+    dialogFullscreen: false,
     items: [
+      { title: 'Info', icon: 'info', click: function () { this.showInfoDialog = true } },
       { title: 'Download', icon: 'cloud_download' },
       { title: 'Move to', icon: 'folder_open' },
       { title: 'Share', icon: 'share' },
@@ -61,7 +104,24 @@ export default {
   },
 
   methods: {
-    ...driveMethods
+    ...driveMethods,
+    moment,
+
+    setFullScreenDialogOption () {
+      if (window.innerWidth < 600) {
+        this.dialogFullscreen = true
+      } else {
+        this.dialogFullscreen = false
+      }
+    }
+  },
+
+  created () {
+    this.setFullScreenDialogOption()
+
+    window.onresize = () => {
+      this.setFullScreenDialogOption()
+    }
   }
 }
 </script>
@@ -89,6 +149,11 @@ export default {
     overflow: hidden;
     padding-left: 8px;
     padding-right: 4px;
+
+    .subheading {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
   .fbtn {
     height: 100%;
@@ -102,6 +167,27 @@ export default {
 }
 .theme--dark .folder {
   border: 1px solid #595959;
+}
+
+.v-dialog {
+  .v-avatar {
+    margin: 0 auto;
+  }
+
+  .v-card__title {
+    text-align: center;
+  }
+
+  .folder-info {
+    ul {
+      list-style: none;
+      padding-left: 0;
+
+      > li {
+        margin-bottom: 8px;
+      }
+    }
+  }
 }
 
 @media (max-width: 599px) {

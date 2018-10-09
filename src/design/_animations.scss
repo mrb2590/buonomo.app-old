@@ -24,15 +24,19 @@
   opacity: 0;
 }
 
-// Fade
-.fade-enter-active {
-  transition: opacity .5s;
+// Fall in out
+.fall-in-out-enter,
+.fall-in-out-enter * {
+  transform: translateX(-500px);
 }
 
-.fade-leave-active {
-  opacity: 0;
+.fall-in-out-enter-active,
+.fall-in-out-enter-active * {
+  transition: all 0.3s;
 }
 
-.fade-enter {
-  opacity: 0;
+.fall-in-out-leave-active,
+.fall-in-out-leave-active * {
+  transition: all 0.3s;
+  transform: translateX(-500px);
 }
