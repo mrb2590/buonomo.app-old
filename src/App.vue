@@ -22,6 +22,11 @@
             <v-list-tile-content>
               <v-list-tile-title>{{ fullName }}</v-list-tile-title>
             </v-list-tile-content>
+            <v-list-tile-action>
+              <v-btn icon ripple>
+                <v-icon color="grey lighten-1">notifications</v-icon>
+              </v-btn>
+            </v-list-tile-action>
           </v-list-tile>
         </v-list>
       </v-toolbar>
@@ -110,7 +115,7 @@
       </transition>
     </v-content>
 
-    <v-footer class="pa-2" fixed app>
+    <v-footer class="pa-2" fixed app inset>
       <div>&copy; {{ new Date().getFullYear() }}</div>
     </v-footer>
   </v-app>
@@ -132,13 +137,11 @@ export default {
     }
   },
 
-  data () {
-    return {
-      drawer: window.innerWidth >= 1264,
-      miniDrawer: false,
-      title: appConfig.title
-    }
-  },
+  data: () => ({
+    drawer: window.innerWidth >= 1264,
+    miniDrawer: false,
+    title: appConfig.title
+  }),
 
   computed: {
     ...authComputed,

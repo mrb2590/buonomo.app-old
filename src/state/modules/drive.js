@@ -74,15 +74,14 @@ export const actions = {
       })
   },
 
-  downloadFolder (folder) {
-    return axios.get(`${apiUrl}/v1/folders/${folder.id}/download`, {
+  downloadFolder ({ state }, folderId) {
+    return axios.get(`${apiUrl}/v1/folders/${folderId}/download`, {
       params: {
-        _: +new Date(),
         encoded: 1
       }
     })
       .then(response => {
-        let anchor = document.getElementById(`folder_${folder.id}`)
+        let anchor = document.createElement('a')
         let blob = b64toBlob(response.data.file, 'application/zip')
         let windowUrl = window.URL || window.webkitURL
         let url = windowUrl.createObjectURL(blob)
@@ -95,15 +94,14 @@ export const actions = {
       })
   },
 
-  downloadFile (file) {
+  downloadFile ({ state }, file) {
     return axios.get(`${apiUrl}/v1/files/${file.id}/download`, {
       params: {
-        _: +new Date(),
         encoded: 1
       }
     })
       .then(response => {
-        let anchor = document.getElementById(`file_${file.id}`)
+        let anchor = document.createElement('a')
         let blob = b64toBlob(response.data.file, file.mime_type)
         let windowUrl = window.URL || window.webkitURL
         let url = windowUrl.createObjectURL(blob)

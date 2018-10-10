@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import { driveComputed } from '../state/helpers'
+import { driveComputed } from '../../state/helpers'
 
 export default {
   name: 'Folder',

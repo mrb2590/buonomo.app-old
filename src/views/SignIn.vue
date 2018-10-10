@@ -26,7 +26,6 @@
               :type="showPassword ? 'text' : 'password'"
               :disabled="sending"
               namme="password"
-              hint="At least 8 characters"
               label="Password"
               required
               @click:append="showPassword = !showPassword"

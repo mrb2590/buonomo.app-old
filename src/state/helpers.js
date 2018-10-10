@@ -25,7 +25,7 @@ export const userComputed = {
   ...mapState('user', {
     user: state => state.user
   }),
-  ...mapGetters('user', ['fullName', 'initials', 'formattedDates'])
+  ...mapGetters('user', ['fullName', 'initials', 'formatDate'])
 }
 
 export const userMethods = mapActions('user', ['fetchUser'])

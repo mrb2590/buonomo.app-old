@@ -1,35 +1,22 @@
 <template>
   <div class="drive">
-    <v-toolbar flat transparent elevation="0" v-if="openFolder">
-      <v-btn-toggle>
-        <v-btn flat @click="sidebarOpen = !sidebarOpen"><v-icon>list</v-icon></v-btn>
-      </v-btn-toggle>
-      <v-toolbar-title v-if="openFolder">{{ openFolder.name }}</v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-btn-toggle>
-        <v-btn flat>
-          <v-icon>chevron_left</v-icon>
-        </v-btn>
-        <v-btn flat>
-          <v-icon>chevron_right</v-icon>
-        </v-btn>
-        <v-btn flat
-          @click="upFolder()"
-          :disabled="!openFolder.parent_id"
-        >
-          <v-icon>expand_less</v-icon>
-        </v-btn>
-        <v-btn flat
-          @click="openNewFolder(openFolder.id, true)"
-        >
-          <v-icon>refresh</v-icon>
-        </v-btn>
-      </v-btn-toggle>
-    </v-toolbar>
+    <ExplorerToolbar
+      :folder="openFolder"
+      :openNewFolder="openNewFolder"
+      @toggleSidebar="toggleSidebar()"
+    />
+    <CreateFolderDialog @showCreateFolderDialog="setShowCreateFolderDialog"/>
+    <!-- <FolderBreadcrumb :folder="openFolder"/> -->
     <div class="drive-container" :class="{ 'sidebar-open': sidebarOpen }">
       <div class="sidebar">
         <ul class="folder-tree">
-          <FolderTree v-if="tree" :folder="tree" :openFolder="openNewFolder"></FolderTree>
+          <FolderTree
+            v-if="tree"
+            :folder="tree"
+            :openFolder="openNewFolder"
+            :startExpanded="true"
+          >
+          </FolderTree>
         </ul>
       </div>
       <div class="explorer">
@@ -42,27 +29,39 @@
               <Folder
                 :folder="childFolder"
                 :openNewFolder="openNewFolder"
+                @showInfoDialog="setShowInfoDialog"
+                @showInfoFolder="setShowInfoFolder"
               />
             </v-flex>
             <v-flex xs12 sm12 md6 lg4 xl3
               v-for="(file, index) in openFolder.files"
               v-bind:key="`file-${index}`"
             >
-              <File
-                :file="file"
-              />
+              <File :file="file"/>
             </v-flex>
           </v-layout>
         </v-container>
       </div>
     </div>
+
+    <ExplorerSpeedDial
+      :folder="openFolder"
+      @showCreateFolderDialog="setShowCreateFolderDialog"
+    />
+
+    <InfoDialog :folder="infoFolder" @showInfoDialog="setShowInfoDialog"/>
   </div>
 </template>
 
 <script>
-import File from '../components/File'
-import Folder from '../components/Folder'
-import FolderTree from '../components/FolderTree'
+import File from '../components/drive/File'
+import Folder from '../components/drive/Folder'
+import FolderTree from '../components/drive/FolderTree'
+import FolderBreadcrumb from '../components/drive/FolderBreadcrumb'
+import ExplorerToolbar from '../components/drive/ExplorerToolbar'
+import ExplorerSpeedDial from '../components/drive/ExplorerSpeedDial'
+import CreateFolderDialog from '../components/drive/CreateFolderDialog'
+import InfoDialog from '../components/drive/InfoDialog'
 import { userComputed, driveComputed, driveMethods } from '../state/helpers'
 
 export default {
@@ -79,10 +78,22 @@ export default {
   },
 
   data: () => ({
-    sidebarOpen: true
+    sidebarOpen: true,
+    showCreateFolderDialog: false,
+    showInfoDialog: false,
+    infoFolder: false
   }),
 
-  components: { File, Folder, FolderTree },
+  components: {
+    File,
+    Folder,
+    FolderTree,
+    FolderBreadcrumb,
+    ExplorerToolbar,
+    ExplorerSpeedDial,
+    CreateFolderDialog,
+    InfoDialog
+  },
 
   computed: {
     ...driveComputed,
@@ -91,6 +102,18 @@ export default {
 
   methods: {
     ...driveMethods,
+
+    setShowCreateFolderDialog (value) {
+      this.showCreateFolderDialog = value
+    },
+
+    setShowInfoDialog (value) {
+      this.showInfoDialog = value
+    },
+
+    setShowInfoFolder (value) {
+      this.infoFolder = value
+    },
 
     openNewFolder: function (folderId, force = false) {
       this.fetchFolder({
@@ -103,10 +126,8 @@ export default {
       })
     },
 
-    upFolder: function () {
-      if (this.openFolder.parent_id) {
-        this.openNewFolder(this.openFolder.parent_id)
-      }
+    toggleSidebar () {
+      this.sidebarOpen = !this.sidebarOpen
     }
   },
 
@@ -137,16 +158,19 @@ export default {
   align-items: stretch;
   align-content: stretch;
 
+  .sidebar, .explorer {
+    height: calc(100vh - 164px);
+  }
+
   .sidebar {
     transition: left 0.3s ease-in-out;
     width: 300px;
     left: -100%;
     padding: 8px;
     overflow: auto;
-    height: calc(100vh - 164px);
     position: absolute;
     background: #fafafa;
-    // border-right: 1px solid #e0e0e0;
+    border-right: 1px solid #e0e0e0;
 
     > .folder-tree {
       margin-left: 0;
@@ -155,12 +179,11 @@ export default {
   }
 
   .explorer {
-    transition: left 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
     width: 100%;
     position: absolute;
     overflow: auto;
     left: 0;
-    height: 100%;
 
     .container {
       padding: 0 8px 8px;
@@ -185,13 +208,13 @@ export default {
 .theme--dark {
   .sidebar {
     background: #303030;
-    // border-right: 1px solid #595959;
+    border-right: 1px solid #595959;
   }
 }
 
-@media (max-width: 959px) and (min-width: 600px) {
+@media (max-width: 959px) {
   .drive-container {
-    .sidebar {
+    .sidebar, .explorer {
       height: calc(100vh - 148px);
     }
   }
@@ -209,7 +232,6 @@ export default {
     }
 
     .sidebar {
-      height: calc(100vh - 148px);
       width: 100%;
       z-index: 2;
     }
