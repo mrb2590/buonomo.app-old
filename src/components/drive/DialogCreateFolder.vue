@@ -1,7 +1,7 @@
 <template>
   <v-dialog
     class="create-folder-dialog"
-    v-model="$parent.showCreateFolderDialog"
+    v-model="$parent.showDialogCreateFolder"
     max-width="290"
     :fullscreen="$store.state.app.dialogFullscreen"
     scrollable
@@ -49,7 +49,7 @@ import { required, maxLength } from 'vuelidate/lib/validators'
 import { driveMethods } from '../../state/helpers'
 
 export default {
-  name: 'showCreateFolderDialog',
+  name: 'DialogCreateFolder',
 
   data: () => ({
     form: {
@@ -60,7 +60,7 @@ export default {
     sendingError: ''
   }),
 
-  props: [ 'showCreateFolderDialog' ],
+  props: [ 'showDialogCreateFolder' ],
 
   mixins: [validationMixin],
 
@@ -101,7 +101,7 @@ export default {
 
       return this.addFolder({
         name: this.form.folderName,
-        parent_id: this.$store.state.drive.openFolder.id
+        parentId: this.$store.state.drive.openFolder.id
       })
         .then(folder => {
           console.log(folder)
@@ -122,7 +122,7 @@ export default {
     },
 
     closeDialog () {
-      this.$emit('showCreateFolderDialog', false)
+      this.$emit('showDialogCreateFolder', false)
       this.clear()
     }
   }

@@ -1,7 +1,7 @@
 <template>
   <v-dialog
     class="info-dialog"
-    v-model="$parent.showInfoDialog"
+    v-model="$parent.showDialogFolderInfo"
     max-width="290"
     :fullscreen="$store.state.app.dialogFullscreen"
     scrollable
@@ -31,9 +31,9 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn
-          color="green darken-1"
+          color="primary"
           flat="flat"
-          @click="$emit('showInfoDialog', false)"
+          @click="$emit('showDialogFolderInfo', false)"
         >
           Close
         </v-btn>
@@ -46,9 +46,9 @@
 import moment from 'moment'
 
 export default {
-  name: 'InfoDialog',
+  name: 'DialogFolderInfo',
 
-  props: [ 'folder', 'showInfoDialog' ],
+  props: [ 'folder', 'showDialogFolderInfo' ],
 
   methods: {
     moment

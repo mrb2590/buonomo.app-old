@@ -38,7 +38,7 @@ export const mutations = {
   },
   ADD_FOLDER_TO_TREE (state, folder) {
     let foundFolder = searchTree(state.tree, folder.id)
-    foundFolder.children = folder.children
+    foundFolder.children = lang.cloneDeep(folder.children)
     state.tree = lang.cloneDeep(state.tree)
     foundFolder.children = sortByKey(foundFolder.children, 'name')
   }

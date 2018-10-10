@@ -6,7 +6,7 @@
       </v-avatar>
     </div>
     <div class="ftext">
-      <div class="subheading">{{ file.display_filename }}</div>
+      <div class="subheading" :title="file.display_filename">{{ file.display_filename }}</div>
       <div class="caption">{{ file.size_readable }}</div>
     </div>
     <div class="fbtn">
@@ -16,6 +16,7 @@
         origin="top right"
         transition="scale-transition"
         min-width="150"
+        @click.native.stop
       >
         <v-btn
           slot="activator"
@@ -25,13 +26,29 @@
         </v-btn>
 
         <v-list>
-          <v-list-tile
-            v-for="(item, i) in items"
-            :key="i"
-            @click="() => {}"
-          >
-            <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-            <v-icon>{{ item.icon }}</v-icon>
+          <v-list-tile @click="setShowDialogFileInfo">
+            <v-list-tile-title>Info</v-list-tile-title>
+            <v-icon>info</v-icon>
+          </v-list-tile>
+
+          <v-list-tile @click="downloadFile(file)">
+            <v-list-tile-title>Download</v-list-tile-title>
+            <v-icon>cloud_download</v-icon>
+          </v-list-tile>
+
+          <v-list-tile>
+            <v-list-tile-title>Move to</v-list-tile-title>
+            <v-icon>folder_open</v-icon>
+          </v-list-tile>
+
+          <v-list-tile>
+            <v-list-tile-title>Share</v-list-tile-title>
+            <v-icon>share</v-icon>
+          </v-list-tile>
+
+          <v-list-tile>
+            <v-list-tile-title>Trash</v-list-tile-title>
+            <v-icon>delete</v-icon>
           </v-list-tile>
         </v-list>
       </v-menu>
@@ -40,24 +57,26 @@
 </template>
 
 <script>
-import { driveComputed } from '../../state/helpers'
+import { driveMethods } from '../../state/helpers'
 
 export default {
   name: 'Folder',
 
   props: [ 'file' ],
 
-  data: () => ({
-    items: [
-      { title: 'Download', icon: 'cloud_download' },
-      { title: 'Move to', icon: 'folder_open' },
-      { title: 'Share', icon: 'share' },
-      { title: 'Trash', icon: 'delete' }
-    ]
-  }),
+  data () {
+    return {
+      showDialogFileInfo: false
+    }
+  },
 
-  computed: {
-    ...driveComputed
+  methods: {
+    ...driveMethods,
+
+    setShowDialogFileInfo () {
+      this.$emit('showInfoFile', this.file)
+      this.$emit('showDialogFileInfo', true)
+    }
   }
 }
 </script>
@@ -72,7 +91,6 @@ export default {
   padding: 6px;
   border-radius: 30px;
   border: 1px solid #e0e0e0;
-  cursor: pointer;
   overflow: hidden;
 
   .ficon {
@@ -85,6 +103,12 @@ export default {
     overflow: hidden;
     padding-left: 8px;
     padding-right: 4px;
+
+    .subheading {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
   .fbtn {
     height: 100%;
@@ -96,6 +120,7 @@ export default {
     }
   }
 }
+
 .theme--dark .file {
   border: 1px solid #595959;
 }

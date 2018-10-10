@@ -5,7 +5,7 @@
       :openNewFolder="openNewFolder"
       @toggleSidebar="toggleSidebar()"
     />
-    <CreateFolderDialog @showCreateFolderDialog="setShowCreateFolderDialog"/>
+    <DialogCreateFolder @showDialogCreateFolder="setShowDialogCreateFolder"/>
     <!-- <FolderBreadcrumb :folder="openFolder"/> -->
     <div class="drive-container" :class="{ 'sidebar-open': sidebarOpen }">
       <div class="sidebar">
@@ -29,7 +29,7 @@
               <Folder
                 :folder="childFolder"
                 :openNewFolder="openNewFolder"
-                @showInfoDialog="setShowInfoDialog"
+                @showDialogFolderInfo="setShowDialogFolderInfo"
                 @showInfoFolder="setShowInfoFolder"
               />
             </v-flex>
@@ -37,7 +37,11 @@
               v-for="(file, index) in openFolder.files"
               v-bind:key="`file-${index}`"
             >
-              <File :file="file"/>
+              <File
+                :file="file"
+                @showDialogFileInfo="setShowDialogFileInfo"
+                @showInfoFile="setShowInfoFile"
+              />
             </v-flex>
           </v-layout>
         </v-container>
@@ -46,10 +50,11 @@
 
     <ExplorerSpeedDial
       :folder="openFolder"
-      @showCreateFolderDialog="setShowCreateFolderDialog"
+      @showDialogCreateFolder="setShowDialogCreateFolder"
     />
 
-    <InfoDialog :folder="infoFolder" @showInfoDialog="setShowInfoDialog"/>
+    <DialogFolderInfo :folder="infoFolder" @showDialogFolderInfo="setShowDialogFolderInfo"/>
+    <DialogFileInfo :file="infoFile" @showDialogFileInfo="setShowDialogFileInfo"/>
   </div>
 </template>
 
@@ -60,8 +65,9 @@ import FolderTree from '../components/drive/FolderTree'
 import FolderBreadcrumb from '../components/drive/FolderBreadcrumb'
 import ExplorerToolbar from '../components/drive/ExplorerToolbar'
 import ExplorerSpeedDial from '../components/drive/ExplorerSpeedDial'
-import CreateFolderDialog from '../components/drive/CreateFolderDialog'
-import InfoDialog from '../components/drive/InfoDialog'
+import DialogCreateFolder from '../components/drive/DialogCreateFolder'
+import DialogFolderInfo from '../components/drive/DialogFolderInfo'
+import DialogFileInfo from '../components/drive/DialogFileInfo'
 import { userComputed, driveComputed, driveMethods } from '../state/helpers'
 
 export default {
@@ -79,9 +85,11 @@ export default {
 
   data: () => ({
     sidebarOpen: true,
-    showCreateFolderDialog: false,
-    showInfoDialog: false,
-    infoFolder: false
+    showDialogCreateFolder: false,
+    showDialogFolderInfo: false,
+    infoFolder: false,
+    showDialogFileInfo: false,
+    infoFile: false
   }),
 
   components: {
@@ -91,8 +99,9 @@ export default {
     FolderBreadcrumb,
     ExplorerToolbar,
     ExplorerSpeedDial,
-    CreateFolderDialog,
-    InfoDialog
+    DialogCreateFolder,
+    DialogFolderInfo,
+    DialogFileInfo
   },
 
   computed: {
@@ -103,16 +112,24 @@ export default {
   methods: {
     ...driveMethods,
 
-    setShowCreateFolderDialog (value) {
-      this.showCreateFolderDialog = value
+    setShowDialogCreateFolder (value) {
+      this.showDialogCreateFolder = value
     },
 
-    setShowInfoDialog (value) {
-      this.showInfoDialog = value
+    setShowDialogFolderInfo (value) {
+      this.showDialogFolderInfo = value
     },
 
     setShowInfoFolder (value) {
       this.infoFolder = value
+    },
+
+    setShowDialogFileInfo (value) {
+      this.showDialogFileInfo = value
+    },
+
+    setShowInfoFile (value) {
+      this.infoFile = value
     },
 
     openNewFolder: function (folderId, force = false) {
@@ -212,7 +229,15 @@ export default {
   }
 }
 
-@media (max-width: 959px) {
+@media (max-width: 959px) and (min-width: 751px) {
+  .drive-container {
+    .sidebar, .explorer {
+      height: calc(100vh - 132px);
+    }
+  }
+}
+
+@media (max-width: 750px) {
   .drive-container {
     .sidebar, .explorer {
       height: calc(100vh - 148px);

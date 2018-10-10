@@ -26,7 +26,7 @@
         </v-btn>
 
         <v-list>
-          <v-list-tile @click="setShowInfoDialog">
+          <v-list-tile @click="setShowDialogFolderInfo">
             <v-list-tile-title>Info</v-list-tile-title>
             <v-icon>info</v-icon>
           </v-list-tile>
@@ -66,16 +66,16 @@ export default {
 
   data () {
     return {
-      showInfoDialog: false
+      showDialogFolderInfo: false
     }
   },
 
   methods: {
     ...driveMethods,
 
-    setShowInfoDialog () {
+    setShowDialogFolderInfo () {
       this.$emit('showInfoFolder', this.folder)
-      this.$emit('showInfoDialog', true)
+      this.$emit('showDialogFolderInfo', true)
     }
   }
 }
