@@ -63,6 +63,7 @@
       @downloadFolder="downloadFolder(openFolder.id)"
       @showDialogFolderInfo="setShowDialogFolderInfo(true); infoFolder = openFolder"
       @showDialogCreateFolder="setShowDialogCreateFolder"
+      @showDialogRenameFolder="setShowDialogRenameFolder(true); infoFolder = openFolder"
     />
 
     <DialogRenameFolder :folder="infoFolder" @showDialogRenameFolder="setShowDialogRenameFolder"/>

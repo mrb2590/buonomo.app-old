@@ -30,7 +30,6 @@
             name="folderName"
             label="Name"
             required
-            :value="folder.name"
             @input="$v.form.folderName.$touch()"
             @blur="$v.form.folderName.$touch()"
           ></v-text-field>
@@ -56,6 +55,7 @@ export default {
   name: 'DialogRenameFolder',
 
   data: () => ({
+    showDialog: false,
     form: {
       folderName: '',
       isClear: true
@@ -126,6 +126,18 @@ export default {
     closeDialog () {
       this.$emit('showDialogRenameFolder', false)
       this.clear()
+    }
+  },
+
+  beforeUpdate () {
+    this.showDialog = this.$parent.showDialogRenameFolder
+  },
+
+  watch: {
+    // Can't watch parent var so copy it to showDialog and watch that
+    showDialog: function (val) {
+      console.log(val)
+      this.form.folderName = this.folder.name
     }
   }
 }

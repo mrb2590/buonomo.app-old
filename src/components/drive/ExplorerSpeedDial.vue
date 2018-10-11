@@ -36,6 +36,16 @@
       dark
       small
       color="accent"
+      @click="$emit('showDialogRenameFolder', true)"
+    >
+      <v-icon>create</v-icon>
+    </v-btn>
+
+    <v-btn
+      fab
+      dark
+      small
+      color="accent"
       @click="$emit('showDialogCreateFolder', true)"
     >
       <v-icon>create_new_folder</v-icon>

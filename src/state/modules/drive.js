@@ -46,14 +46,15 @@ export const mutations = {
   SET_LOADING_OPEN_FOLDER (state, newValue) {
     state.loadingOpenFolder = newValue
   },
-  UPDATE_FOLDER_NAME (state, folder, newValue) {
+  UPDATE_FOLDER_NAME (state, { folder, newValue }) {
     folder.name = newValue
-    // let foundFolder = searchTree(state.tree, folder.id)
-    // foundFolder.name = newValue
-    // if (folder.parent_id) {
-    //   foundFolder = searchTree(state.tree, folder.parent_id)
-    //   foundFolder.children = sortByKey(foundFolder.children, 'name')
-    // }
+    let foundFolder = searchTree(state.tree, folder.id)
+    foundFolder.name = newValue
+    if (folder.parent_id) {
+      foundFolder = searchTree(state.tree, folder.parent_id)
+      foundFolder.children = sortByKey(foundFolder.children, 'name')
+    }
+    state.openFolder.children = sortByKey(state.openFolder.children, 'name')
   }
 }
 
@@ -173,7 +174,10 @@ export const actions = {
   renameFolder ({ state, commit }, { folder, name }) {
     return axios.patch(`${apiUrl}/v1/folders/${folder.id}`, { name: name })
       .then(response => {
-        commit('UPDATE_FOLDER_NAME', folder, response.data.name)
+        commit('UPDATE_FOLDER_NAME', {
+          folder: folder,
+          newValue: response.data.name
+        })
       })
       .catch(() => {
         this.commit('app/SET_SNACKBAR', {
