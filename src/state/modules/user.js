@@ -42,12 +42,14 @@ export const actions = {
         commit('SET_USER', response.data)
         return response.data
       })
-      .catch(error => {
-        if (error) {
-          commit('SET_USER', null)
-        }
-        console.log('Could not fetch profile.')
-        console.log(error)
+      .catch(() => {
+        commit('SET_USER', null)
+        this.commit('app/SET_SNACKBAR', {
+          show: true,
+          color: 'error',
+          closeColor: 'white',
+          text: 'Failed to load your profile!'
+        })
       })
   }
 }

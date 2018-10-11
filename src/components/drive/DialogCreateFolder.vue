@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    class="create-folder-dialog"
+    class="dialog-create-folder"
     v-model="$parent.showDialogCreateFolder"
     max-width="290"
     :fullscreen="$store.state.app.dialogFullscreen"
@@ -21,6 +21,9 @@
       <v-card-text>
         <v-form novalidate @submit.prevent="validate">
           <v-text-field
+            v-if="$parent.showDialogCreateFolder"
+            clearable
+            :autofocus="true"
             v-model="form.folderName"
             :error-messages="folderNameErrors"
             :disabled="sending"
@@ -104,13 +107,11 @@ export default {
         parentId: this.$store.state.drive.openFolder.id
       })
         .then(folder => {
-          console.log(folder)
           this.sending = false
           this.clear()
           this.closeDialog()
         })
-        .catch(error => {
-          console.log(error)
+        .catch(() => {
           this.sending = false
           this.sendingError = 'Something went wrong.'
         })

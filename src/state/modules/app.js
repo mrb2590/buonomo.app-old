@@ -1,5 +1,16 @@
+const defaultSnackbar = {
+  show: false,
+  color: null,
+  closeColor: 'pink',
+  multiline: false,
+  timeout: 0,
+  vertical: false,
+  text: ''
+}
+
 export const state = {
-  dialogFullscreen: false
+  dialogFullscreen: false,
+  snackbar: { ...defaultSnackbar }
 }
 
 export const getters = {
@@ -9,6 +20,12 @@ export const getters = {
 export const mutations = {
   SET_DIALOG_FULLSCREEN (state) {
     state.dialogFullscreen = window.innerWidth < 600
+  },
+  SET_SNACKBAR (state, newvalue) {
+    state.snackbar = Object.assign(state.snackbar, defaultSnackbar, newvalue)
+  },
+  RESET_SNACKBAR (state) {
+    state.snackbar = { ...defaultSnackbar }
   }
 }
 

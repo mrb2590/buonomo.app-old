@@ -89,6 +89,12 @@ export const actions = {
           if (error.response.status === 401) {
             commit('SET_TOKEN', null)
           }
+          this.commit('app/SET_SNACKBAR', {
+            show: true,
+            color: 'error',
+            closeColor: 'white',
+            text: 'Failed to reauthenticate!'
+          })
           return false
         })
     } else {

@@ -34,11 +34,12 @@ export const userMethods = mapActions('user', ['fetchUser'])
 export const driveComputed = {
   ...mapState('drive', {
     openFolder: state => state.openFolder,
-    tree: state => state.tree
+    tree: state => state.tree,
+    loadingOpenFolder: state => state.loadingOpenFolder
   }),
   ...mapGetters('drive', ['formatDate'])
 }
 
 export const driveMethods = mapActions('drive', [
-  'updateTree', 'fetchFolder', 'downloadFolder', 'downloadFile', 'addFolder'
+  'updateTree', 'fetchFolder', 'downloadFolder', 'downloadFile', 'addFolder', 'renameFolder'
 ])

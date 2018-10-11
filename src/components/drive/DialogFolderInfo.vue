@@ -31,7 +31,6 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn
-          color="primary"
           flat="flat"
           @click="$emit('showDialogFolderInfo', false)"
         >

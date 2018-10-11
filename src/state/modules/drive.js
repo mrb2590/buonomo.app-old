@@ -7,7 +7,8 @@ var apiUrl = process.env.VUE_APP_API_URL
 
 export const state = {
   openFolder: null,
-  tree: null
+  tree: null,
+  loadingOpenFolder: true
 }
 
 export const getters = {
@@ -41,6 +42,18 @@ export const mutations = {
     foundFolder.children = lang.cloneDeep(folder.children)
     state.tree = lang.cloneDeep(state.tree)
     foundFolder.children = sortByKey(foundFolder.children, 'name')
+  },
+  SET_LOADING_OPEN_FOLDER (state, newValue) {
+    state.loadingOpenFolder = newValue
+  },
+  UPDATE_FOLDER_NAME (state, folder, newValue) {
+    folder.name = newValue
+    // let foundFolder = searchTree(state.tree, folder.id)
+    // foundFolder.name = newValue
+    // if (folder.parent_id) {
+    //   foundFolder = searchTree(state.tree, folder.parent_id)
+    //   foundFolder.children = sortByKey(foundFolder.children, 'name')
+    // }
   }
 }
 
@@ -53,12 +66,19 @@ export const actions = {
     }
   },
 
-  fetchFolder ({ commit, state, dispatch }, { folderId, force = false, setCurrent = true }) {
+  fetchFolder ({ commit, state, dispatch }, {
+    folderId,
+    force = false,
+    setCurrent = true,
+    expanding = false
+  }) {
+    if (!expanding) commit('SET_LOADING_OPEN_FOLDER', true)
     // Search tree first for cached folder
     if (!force) {
       let folder = searchTree(state.tree, folderId)
       if (folder.children) {
         if (setCurrent) commit('SET_FOLDER', folder)
+        if (!expanding) setTimeout(function () { commit('SET_LOADING_OPEN_FOLDER', false) }, 333)
         return Promise.resolve(folder)
       }
     }
@@ -66,11 +86,18 @@ export const actions = {
       .then(response => {
         if (setCurrent) commit('SET_FOLDER', response.data)
         dispatch('updateTree', response.data)
+        if (!expanding) commit('SET_LOADING_OPEN_FOLDER', false)
         return response.data
       })
-      .catch(error => {
+      .catch(() => {
         if (setCurrent) commit('SET_FOLDER', null)
-        console.log(error)
+        if (!expanding) commit('SET_LOADING_OPEN_FOLDER', false)
+        this.commit('app/SET_SNACKBAR', {
+          show: true,
+          color: 'error',
+          closeColor: 'white',
+          text: 'Failed to load the folder!'
+        })
       })
   },
 
@@ -89,8 +116,13 @@ export const actions = {
         anchor.setAttribute('download', response.data.filename)
         anchor.click()
       })
-      .catch(error => {
-        console.log(error)
+      .catch(() => {
+        this.commit('app/SET_SNACKBAR', {
+          show: true,
+          color: 'error',
+          closeColor: 'white',
+          text: 'Failed to download the folder!'
+        })
       })
   },
 
@@ -109,8 +141,13 @@ export const actions = {
         anchor.setAttribute('download', response.data.filename)
         anchor.click()
       })
-      .catch(error => {
-        console.log(error)
+      .catch(() => {
+        this.commit('app/SET_SNACKBAR', {
+          show: true,
+          color: 'error',
+          closeColor: 'white',
+          text: 'Failed to download the file!'
+        })
       })
   },
 
@@ -123,9 +160,28 @@ export const actions = {
         commit('ADD_CHILD_FOLDER', response.data)
         commit('ADD_FOLDER_TO_TREE', response.data)
       })
-      .catch(error => {
-        this.commit('app/SET_SHOWSNACKBAR', true)
-        console.log(error)
+      .catch(() => {
+        this.commit('app/SET_SNACKBAR', {
+          show: true,
+          color: 'error',
+          closeColor: 'white',
+          text: 'Failed to create the folder!'
+        })
+      })
+  },
+
+  renameFolder ({ state, commit }, { folder, name }) {
+    return axios.patch(`${apiUrl}/v1/folders/${folder.id}`, { name: name })
+      .then(response => {
+        commit('UPDATE_FOLDER_NAME', folder, response.data.name)
+      })
+      .catch(() => {
+        this.commit('app/SET_SNACKBAR', {
+          show: true,
+          color: 'error',
+          closeColor: 'white',
+          text: 'Failed to rename the folder!'
+        })
       })
   }
 }

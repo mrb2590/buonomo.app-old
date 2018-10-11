@@ -1,6 +1,6 @@
 <template>
   <div class="explorer-toolbar">
-    <v-toolbar flat transparent elevation="0" v-if="folder">
+    <v-toolbar flat transparent elevation="0">
       <v-toolbar-title v-if="folder" :title="folder.name">{{ folder.name }}</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn-toggle>
@@ -12,6 +12,7 @@
         </v-btn>
         <v-btn
           flat
+          v-if="folder"
           @click="upFolder()"
           :disabled="!folder.parent_id"
         >
@@ -19,6 +20,7 @@
         </v-btn>
         <v-btn
           flat
+          v-if="folder"
           @click="openNewFolder(folder.id, true)"
         >
           <v-icon>refresh</v-icon>

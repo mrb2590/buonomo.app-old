@@ -9,6 +9,7 @@
 
           <v-card-text>
             <v-text-field
+              :autofocus="true"
               v-model="form.email"
               :error-messages="emailErrors"
               :disabled="sending"
@@ -39,13 +40,6 @@
               color="primary"
               :disabled="sending"
             ></v-switch>
-          </v-card-text>
-
-          <v-card-text
-            v-if="sendingError"
-            class="text-xs-center"
-          >
-            <span class="error--text">{{ sendingError }}</span>
           </v-card-text>
 
           <v-card-actions>
@@ -87,8 +81,7 @@ export default {
       password: '',
       isClear: true
     },
-    sending: false,
-    sendingError: ''
+    sending: false
   }),
 
   mixins: [validationMixin],
@@ -146,7 +139,6 @@ export default {
 
     submit () {
       this.sending = true
-      this.sendingError = false
 
       return this.signIn({
         email: this.form.email,
@@ -162,9 +154,17 @@ export default {
         .catch(error => {
           this.sending = false
           if (error.response.status === 401) {
-            this.sendingError = 'Access denied.'
+            this.$store.commit('app/SET_SNACKBAR', {
+              show: true,
+              text: 'Access denied.'
+            })
           } else {
-            this.sendingError = 'Something went wrong.'
+            this.$store.commit('app/SET_SNACKBAR', {
+              show: true,
+              color: 'error',
+              closeColor: 'white',
+              text: 'Failed to authenticate!'
+            })
           }
         })
     },

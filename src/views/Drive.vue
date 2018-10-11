@@ -5,7 +5,7 @@
       :openNewFolder="openNewFolder"
       @toggleSidebar="toggleSidebar()"
     />
-    <DialogCreateFolder @showDialogCreateFolder="setShowDialogCreateFolder"/>
+
     <!-- <FolderBreadcrumb :folder="openFolder"/> -->
     <div class="drive-container" :class="{ 'sidebar-open': sidebarOpen }">
       <div class="sidebar">
@@ -20,54 +20,69 @@
         </ul>
       </div>
       <div class="explorer">
-        <v-container fluid>
-          <v-layout row wrap v-if="openFolder">
-            <v-flex xs12 sm12 md6 lg4 xl3
-              v-for="(childFolder, index) in openFolder.children"
-              v-bind:key="`folder-${index}`"
-            >
-              <Folder
-                :folder="childFolder"
-                :openNewFolder="openNewFolder"
-                @showDialogFolderInfo="setShowDialogFolderInfo"
-                @showInfoFolder="setShowInfoFolder"
-              />
-            </v-flex>
-            <v-flex xs12 sm12 md6 lg4 xl3
-              v-for="(file, index) in openFolder.files"
-              v-bind:key="`file-${index}`"
-            >
-              <File
-                :file="file"
-                @showDialogFileInfo="setShowDialogFileInfo"
-                @showInfoFile="setShowInfoFile"
-              />
-            </v-flex>
-          </v-layout>
-        </v-container>
+        <transition name="fade">
+          <div class="center-align-outer" v-show="loadingOpenFolder">
+            <div class="center-align-inner">
+              <v-progress-circular indeterminate :size="50" :width="5" color="secondary"></v-progress-circular>
+            </div>
+          </div>
+        </transition>
+        <transition name="fade">
+          <v-container fluid v-show="!loadingOpenFolder">
+            <v-layout row wrap v-if="openFolder">
+              <v-flex xs12 sm12 md6 lg4 xl3
+                v-for="(childFolder, index) in openFolder.children"
+                v-bind:key="`folder-${index}`"
+              >
+                <Folder
+                  :folder="childFolder"
+                  :openNewFolder="openNewFolder"
+                  @showInfoFolder="setShowInfoFolder"
+                  @showDialogFolderInfo="setShowDialogFolderInfo"
+                  @showDialogRenameFolder="setShowDialogRenameFolder"
+                />
+              </v-flex>
+              <v-flex xs12 sm12 md6 lg4 xl3
+                v-for="(file, index) in openFolder.files"
+                v-bind:key="`file-${index}`"
+              >
+                <File
+                  :file="file"
+                  @showInfoFile="setShowInfoFile"
+                  @showDialogFileInfo="setShowDialogFileInfo"
+                />
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </transition>
       </div>
     </div>
 
     <ExplorerSpeedDial
       :folder="openFolder"
+      @downloadFolder="downloadFolder(openFolder.id)"
+      @showDialogFolderInfo="setShowDialogFolderInfo(true); infoFolder = openFolder"
       @showDialogCreateFolder="setShowDialogCreateFolder"
     />
 
+    <DialogRenameFolder :folder="infoFolder" @showDialogRenameFolder="setShowDialogRenameFolder"/>
+    <DialogCreateFolder @showDialogCreateFolder="setShowDialogCreateFolder"/>
     <DialogFolderInfo :folder="infoFolder" @showDialogFolderInfo="setShowDialogFolderInfo"/>
     <DialogFileInfo :file="infoFile" @showDialogFileInfo="setShowDialogFileInfo"/>
   </div>
 </template>
 
 <script>
+import DialogCreateFolder from '../components/drive/DialogCreateFolder'
+import DialogFileInfo from '../components/drive/DialogFileInfo'
+import DialogFolderInfo from '../components/drive/DialogFolderInfo'
+import DialogRenameFolder from '../components/drive/DialogRenameFolder'
+import ExplorerSpeedDial from '../components/drive/ExplorerSpeedDial'
+import ExplorerToolbar from '../components/drive/ExplorerToolbar'
 import File from '../components/drive/File'
 import Folder from '../components/drive/Folder'
-import FolderTree from '../components/drive/FolderTree'
 import FolderBreadcrumb from '../components/drive/FolderBreadcrumb'
-import ExplorerToolbar from '../components/drive/ExplorerToolbar'
-import ExplorerSpeedDial from '../components/drive/ExplorerSpeedDial'
-import DialogCreateFolder from '../components/drive/DialogCreateFolder'
-import DialogFolderInfo from '../components/drive/DialogFolderInfo'
-import DialogFileInfo from '../components/drive/DialogFileInfo'
+import FolderTree from '../components/drive/FolderTree'
 import { userComputed, driveComputed, driveMethods } from '../state/helpers'
 
 export default {
@@ -84,12 +99,13 @@ export default {
   },
 
   data: () => ({
+    infoFile: false,
+    infoFolder: false,
     sidebarOpen: true,
     showDialogCreateFolder: false,
     showDialogFolderInfo: false,
-    infoFolder: false,
-    showDialogFileInfo: false,
-    infoFile: false
+    showDialogRenameFolder: false,
+    showDialogFileInfo: false
   }),
 
   components: {
@@ -101,7 +117,8 @@ export default {
     ExplorerSpeedDial,
     DialogCreateFolder,
     DialogFolderInfo,
-    DialogFileInfo
+    DialogFileInfo,
+    DialogRenameFolder
   },
 
   computed: {
@@ -118,6 +135,10 @@ export default {
 
     setShowDialogFolderInfo (value) {
       this.showDialogFolderInfo = value
+    },
+
+    setShowDialogRenameFolder (value) {
+      this.showDialogRenameFolder = value
     },
 
     setShowInfoFolder (value) {
@@ -149,7 +170,7 @@ export default {
   },
 
   created () {
-    if (!this.openFolder) {
+    if (!this.openFolder && this.user) {
       this.openNewFolder(this.user.folder_id)
     }
   }
@@ -203,6 +224,7 @@ export default {
     left: 0;
 
     .container {
+      height: 100%;
       padding: 0 8px 8px;
     }
   }

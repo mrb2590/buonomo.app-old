@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    class="info-dialog"
+    class="dialog-file-info"
     v-model="$parent.showDialogFileInfo"
     max-width="290"
     :fullscreen="$store.state.app.dialogFullscreen"

@@ -4,7 +4,7 @@
     :bottom="true"
     :right="true"
     transition="slide-y-reverse-transition"
-    fixed
+    absolute
   >
     <v-btn
       slot="activator"
@@ -16,6 +16,21 @@
       <v-icon medium>folder</v-icon>
       <v-icon medium>close</v-icon>
     </v-btn>
+
+    <v-btn
+      fab
+      dark
+      small
+      color="accent"
+      @click="$emit('downloadFolder')"
+    >
+      <v-icon>cloud_download</v-icon>
+    </v-btn>
+
+    <v-btn fab dark small color="accent">
+      <v-icon>cloud_upload</v-icon>
+    </v-btn>
+
     <v-btn
       fab
       dark
@@ -25,29 +40,15 @@
     >
       <v-icon>create_new_folder</v-icon>
     </v-btn>
+
     <v-btn
       fab
       dark
       small
       color="accent"
-    >
-      <v-icon>cloud_upload</v-icon>
-    </v-btn>
-    <v-btn
-      fab
-      dark
-      small
-      color="accent"
+      @click="$emit('showDialogFolderInfo')"
     >
       <v-icon>info</v-icon>
-    </v-btn>
-    <v-btn
-      fab
-      dark
-      small
-      color="accent"
-    >
-      <v-icon>cloud_download</v-icon>
     </v-btn>
   </v-speed-dial>
 </template>
@@ -68,8 +69,8 @@ export default {
 
 <style lang="scss" scoped>
   .v-speed-dial {
-    position: fixed;
-    bottom: 56px;
+    bottom: -16px;
+    transform: none;
     right: 24px;
 
     .v-btn__content > i {

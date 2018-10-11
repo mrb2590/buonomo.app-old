@@ -36,6 +36,11 @@
             <v-icon>cloud_download</v-icon>
           </v-list-tile>
 
+          <v-list-tile @click="setShowDialogRenameFolder">
+            <v-list-tile-title>Rename</v-list-tile-title>
+            <v-icon>create</v-icon>
+          </v-list-tile>
+
           <v-list-tile>
             <v-list-tile-title>Move to</v-list-tile-title>
             <v-icon>folder_open</v-icon>
@@ -76,6 +81,11 @@ export default {
     setShowDialogFolderInfo () {
       this.$emit('showInfoFolder', this.folder)
       this.$emit('showDialogFolderInfo', true)
+    },
+
+    setShowDialogRenameFolder () {
+      this.$emit('showInfoFolder', this.folder)
+      this.$emit('showDialogRenameFolder', true)
     }
   }
 }

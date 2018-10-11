@@ -118,6 +118,25 @@
     <v-footer class="pa-2" fixed app inset>
       <div>&copy; {{ new Date().getFullYear() }}</div>
     </v-footer>
+
+    <v-snackbar
+      v-model="snackbar.show"
+      :bottom="true"
+      :color="snackbar.color"
+      :multi-line="snackbar.multiline"
+      :timeout="snackbar.timeout"
+      :vertical="snackbar.vertical"
+    >
+      {{ snackbar.text }}
+      <v-btn
+        dark
+        flat
+        :color="snackbar.closeColor"
+        @click="resetSnackbar"
+      >
+        Close
+      </v-btn>
+    </v-snackbar>
   </v-app>
 </template>
 
@@ -154,6 +173,21 @@ export default {
       set (newValue) {
         this.$store.commit('preferences/SET_DARK_MODE', newValue)
       }
+    },
+
+    snackbar: {
+      get () {
+        return this.$store.state.app.snackbar
+      },
+      set (newValue) {
+        this.$store.commit('app/SET_SNACKBAR', newValue)
+      }
+    }
+  },
+
+  methods: {
+    resetSnackbar () {
+      this.$store.commit('app/RESET_SNACKBAR')
     }
   }
 }

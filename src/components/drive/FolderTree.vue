@@ -4,7 +4,9 @@
       <v-icon :class="{ expanded: isExpanded }">chevron_right</v-icon>
     </v-btn>
 
-    <div @click="open(folder.id)">
+    <div
+    :class="{ 'no-pointer': $store.state.drive.openFolder.id === folder.id }"
+    @click="$store.state.drive.openFolder.id !== folder.id ? open(folder.id) : false">
       <v-icon v-if="$store.state.drive.openFolder.id === folder.id">folder_open</v-icon>
       <v-icon v-if="$store.state.drive.openFolder.id !== folder.id">folder</v-icon>
       {{ folder.name }}
@@ -58,7 +60,8 @@ export default {
       }, 200)
       this.$store.dispatch('drive/fetchFolder', {
         folderId: this.folder.id,
-        setCurrent: false
+        setCurrent: false,
+        expanding: true
       }).then(() => {
         this.expanding = false
         // Make sure it gets set to false
@@ -73,6 +76,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.folder-tree {
+  padding-left: 22px;
+}
+
 ul {
   list-style: none;
 
@@ -89,6 +96,10 @@ ul {
         margin-left: 10px;
         top: -4px;
       }
+    }
+
+    > div.no-pointer {
+      cursor: default
     }
   }
 }
