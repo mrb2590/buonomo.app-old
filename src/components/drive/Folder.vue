@@ -51,7 +51,7 @@
             <v-icon>share</v-icon>
           </v-list-tile>
 
-          <v-list-tile>
+          <v-list-tile @click="trashFolder(folder)">
             <v-list-tile-title>Trash</v-list-tile-title>
             <v-icon>delete</v-icon>
           </v-list-tile>

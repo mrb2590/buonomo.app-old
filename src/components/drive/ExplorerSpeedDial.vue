@@ -13,8 +13,28 @@
       dark
       fab
     >
-      <v-icon medium>folder</v-icon>
+      <v-icon medium>folder_open</v-icon>
       <v-icon medium>close</v-icon>
+    </v-btn>
+
+    <v-btn
+      fab
+      dark
+      small
+      color="accent"
+      @click="$emit('trashFolder')"
+    >
+      <v-icon>delete</v-icon>
+    </v-btn>
+
+    <v-btn
+      fab
+      dark
+      small
+      color="accent"
+      @click="$emit('showDialogCreateFolder', true)"
+    >
+      <v-icon>create_new_folder</v-icon>
     </v-btn>
 
     <v-btn
@@ -39,16 +59,6 @@
       @click="$emit('showDialogRenameFolder', true)"
     >
       <v-icon>create</v-icon>
-    </v-btn>
-
-    <v-btn
-      fab
-      dark
-      small
-      color="accent"
-      @click="$emit('showDialogCreateFolder', true)"
-    >
-      <v-icon>create_new_folder</v-icon>
     </v-btn>
 
     <v-btn

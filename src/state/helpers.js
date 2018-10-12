@@ -41,5 +41,11 @@ export const driveComputed = {
 }
 
 export const driveMethods = mapActions('drive', [
-  'updateTree', 'fetchFolder', 'downloadFolder', 'downloadFile', 'addFolder', 'renameFolder'
+  'updateTree',
+  'fetchFolder',
+  'downloadFolder',
+  'downloadFile',
+  'createFolder',
+  'renameFolder',
+  'trashFolder'
 ])

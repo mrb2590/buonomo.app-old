@@ -64,6 +64,7 @@
       @showDialogFolderInfo="setShowDialogFolderInfo(true); infoFolder = openFolder"
       @showDialogCreateFolder="setShowDialogCreateFolder"
       @showDialogRenameFolder="setShowDialogRenameFolder(true); infoFolder = openFolder"
+      @trashFolder="trashFolder(openFolder)"
     />
 
     <DialogRenameFolder :folder="infoFolder" @showDialogRenameFolder="setShowDialogRenameFolder"/>
@@ -203,7 +204,7 @@ export default {
 
   .sidebar {
     transition: left 0.3s ease-in-out;
-    width: 300px;
+    width: 350px;
     left: -100%;
     padding: 8px;
     overflow: auto;
@@ -233,8 +234,8 @@ export default {
 
 .drive-container.sidebar-open {
   .explorer {
-    width: calc(100% - 300px);
-    left:  300px;
+    width: calc(100% - 350px);
+    left:  350px;
   }
   .sidebar {
     left: 0;

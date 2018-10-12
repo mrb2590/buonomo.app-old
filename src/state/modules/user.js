@@ -46,9 +46,8 @@ export const actions = {
         commit('SET_USER', null)
         this.commit('app/SET_SNACKBAR', {
           show: true,
-          color: 'error',
-          closeColor: 'white',
-          text: 'Failed to load your profile!'
+          text: 'Failed to load your profile!',
+          timeout: 12
         })
       })
   }

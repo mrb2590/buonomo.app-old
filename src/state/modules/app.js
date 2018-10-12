@@ -1,6 +1,6 @@
 const defaultSnackbar = {
   show: false,
-  color: null,
+  color: 'dark',
   closeColor: 'pink',
   multiline: false,
   timeout: 0,

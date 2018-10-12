@@ -19,7 +19,7 @@ export const getters = {
 
 export const mutations = {
   SET_FOLDER (state, newValue) {
-    state.openFolder = lang.cloneDeep(newValue)
+    state.openFolder = newValue // Keep by reference
     if (newValue) {
       state.openFolder.children = sortByKey(state.openFolder.children, 'name')
       state.openFolder.files = sortByKey(state.openFolder.files, 'display_filename')
@@ -30,14 +30,14 @@ export const mutations = {
     state.openFolder.children.push(lang.cloneDeep(folder))
     state.openFolder.children = sortByKey(state.openFolder.children, 'name')
     // Add child folder to tree
-    let parent = searchTree(state.tree, state.openFolder.id)
-    if (parent) parent.children.push(lang.cloneDeep(folder))
-    parent.children = sortByKey(parent.children, 'name')
+    // let parent = searchTree(state.tree, state.openFolder.id)
+    // if (parent) parent.children.push(lang.cloneDeep(folder))
+    // parent.children = sortByKey(parent.children, 'name')
   },
   SET_TREE (state, newValue) {
     state.tree = lang.cloneDeep(newValue)
   },
-  ADD_FOLDER_TO_TREE (state, folder) {
+  ADD_FOLDER_CHILREN_TO_TREE (state, folder) {
     let foundFolder = searchTree(state.tree, folder.id)
     foundFolder.children = lang.cloneDeep(folder.children)
     state.tree = lang.cloneDeep(state.tree)
@@ -55,13 +55,20 @@ export const mutations = {
       foundFolder.children = sortByKey(foundFolder.children, 'name')
     }
     state.openFolder.children = sortByKey(state.openFolder.children, 'name')
+  },
+  REMOVE_FOLDER (state, folder) {
+    for (var i = 0; i < state.openFolder.children.length; i++) {
+      if (state.openFolder.children[i].id === folder.id) {
+        state.openFolder.children.splice(i, 1)
+      }
+    }
   }
 }
 
 export const actions = {
   updateTree ({ commit, state }, folder) {
     if (state.tree && folder) {
-      commit('ADD_FOLDER_TO_TREE', folder)
+      commit('ADD_FOLDER_CHILREN_TO_TREE', folder)
     } else {
       commit('SET_TREE', folder)
     }
@@ -85,8 +92,9 @@ export const actions = {
     }
     return axios.get(`${apiUrl}/v1/folders/${folderId}/children`)
       .then(response => {
-        if (setCurrent) commit('SET_FOLDER', response.data)
         dispatch('updateTree', response.data)
+        let folder = searchTree(state.tree, response.data.id)
+        if (setCurrent) commit('SET_FOLDER', folder)
         if (!expanding) commit('SET_LOADING_OPEN_FOLDER', false)
         return response.data
       })
@@ -152,14 +160,14 @@ export const actions = {
       })
   },
 
-  addFolder ({ commit }, { name = null, parentId = null }) {
+  createFolder ({ commit }, { name = null, parentId = null }) {
     return axios.post(`${apiUrl}/v1/folders`, {
       name: name,
       parent_id: parentId
     })
       .then(response => {
         commit('ADD_CHILD_FOLDER', response.data)
-        commit('ADD_FOLDER_TO_TREE', response.data)
+        // commit('ADD_FOLDER_CHILREN_TO_TREE', response.data)
       })
       .catch(() => {
         this.commit('app/SET_SNACKBAR', {
@@ -184,7 +192,36 @@ export const actions = {
           show: true,
           color: 'error',
           closeColor: 'white',
-          text: 'Failed to rename the folder!'
+          text: 'Failed to trash the folder!'
+        })
+      })
+  },
+
+  trashFolder ({ state, commit }, folder) {
+    if (folder.parent_id === null) {
+      this.commit('app/SET_SNACKBAR', {
+        show: true,
+        color: 'error',
+        closeColor: 'white',
+        text: 'You cannot remove the root folder.'
+      })
+      return Promise.resolve(false)
+    }
+    return axios.delete(`${apiUrl}/v1/folders/${folder.id}`)
+      .then(response => {
+        // Open the parent folder since we are trashing the current one
+        if (folder.id === state.openFolder.id) {
+          let foundFolder = searchTree(state.tree, folder.parent_id)
+          commit('SET_FOLDER', foundFolder)
+        }
+        commit('REMOVE_FOLDER', folder)
+      })
+      .catch(() => {
+        this.commit('app/SET_SNACKBAR', {
+          show: true,
+          color: 'error',
+          closeColor: 'white',
+          text: 'Failed to trash the folder!'
         })
       })
   }

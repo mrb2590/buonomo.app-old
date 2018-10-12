@@ -102,7 +102,7 @@ export default {
       this.sending = true
       this.sendingError = false
 
-      return this.addFolder({
+      return this.createFolder({
         name: this.form.folderName,
         parentId: this.$store.state.drive.openFolder.id
       })
