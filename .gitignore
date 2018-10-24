@@ -1,10 +1,8 @@
 .DS_Store
 node_modules
 /dist
-*.sublime-project
-*.sublime-workspace
 *.code-workspace
-.vscode
+.vscode/sftp.json
 
 /tests/e2e/videos/
 /tests/e2e/screenshots/
