@@ -103,6 +103,7 @@ export default {
   border: 1px solid #e0e0e0;
   cursor: pointer;
   overflow: hidden;
+  background-color: #fff;
 
   .ficon {
     height: 100%;
@@ -134,6 +135,7 @@ export default {
 
 .theme--dark .folder {
   border: 1px solid #595959;
+  background-color: inherit;
 }
 
 @media (max-width: 599px) {
@@ -142,7 +144,7 @@ export default {
     margin: 0;
     border-left: none !important;
     border-right: none !important;
-    border-bottom: none !important;
+    border-top: none !important;
     padding-top: 12px;
     padding-bottom: 12px;
     padding-left: 16px;
