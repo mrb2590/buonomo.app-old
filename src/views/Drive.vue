@@ -210,7 +210,8 @@ export default {
     overflow: auto;
     position: absolute;
     background: #fafafa;
-    border-right: 1px solid #e0e0e0;
+    // border-right: 1px solid;
+    // border-color: #e0e0e0;
 
     > .folder-tree {
       margin-left: 0;
@@ -249,7 +250,7 @@ export default {
 .theme--dark {
   .sidebar {
     background: #303030;
-    border-right: 1px solid #595959;
+    // border-color: #595959;
   }
 }
 

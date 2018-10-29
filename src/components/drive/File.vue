@@ -89,10 +89,11 @@ export default {
   width: calc(100% - 12px);
   margin: 6px;
   padding: 6px;
-  border-radius: 30px;
-  border: 1px solid #e0e0e0;
-  overflow: hidden;
+  border-radius: 4px;
+  border: 1px solid;
+  border-color: #fff;
   background-color: #fff;
+  overflow: hidden;
 
   .ficon {
     height: 100%;
@@ -123,8 +124,8 @@ export default {
 }
 
 .theme--dark .file {
-  border: 1px solid #595959;
-  background-color: inherit;
+  border-color: #424242;
+  background-color: #424242;
 }
 
 @media (max-width: 599px) {
@@ -139,6 +140,11 @@ export default {
     padding-left: 16px;
     padding-right: 16px;
     border-radius: 0;
+    border-color: #e0e0e0;
+  }
+
+  .theme--dark .file {
+    border-color: #595959;
   }
 }
 </style>
