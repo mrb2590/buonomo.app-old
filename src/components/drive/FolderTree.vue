@@ -1,12 +1,13 @@
 <template>
   <li class="folder-tree-item">
-    <v-btn class="expand-btn" small icon @click="expandFolder">
+    <v-btn class="expand-btn" small icon @click="expandFolder" :title="folder.name">
       <v-icon :class="{ expanded: isExpanded }">chevron_right</v-icon>
     </v-btn>
 
     <div
     :class="{ 'no-pointer': $store.state.drive.openFolder.id === folder.id }"
-    @click="$store.state.drive.openFolder.id !== folder.id ? open(folder.id) : false">
+    @click="$store.state.drive.openFolder.id !== folder.id ? open(folder.id) : false"
+    :title="folder.name">
       <v-icon v-if="$store.state.drive.openFolder.id === folder.id">folder_open</v-icon>
       <v-icon v-if="$store.state.drive.openFolder.id !== folder.id">folder</v-icon>
       {{ folder.name }}
