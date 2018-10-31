@@ -30,8 +30,13 @@
         <transition name="fade">
           <v-container fluid v-show="!loadingOpenFolder">
             <v-layout row wrap v-if="openFolder">
+              <v-flex xs12>
+                <div>
+                  <small>{{ openFolder.path }}</small>
+                </div>
+              </v-flex>
               <v-flex xs12 sm12 md6 lg4 xl3
-                v-for="(childFolder, index) in openFolder.children"
+                v-for="(childFolder, index) in openFolder.folders"
                 v-bind:key="`folder-${index}`"
               >
                 <Folder

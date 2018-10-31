@@ -23,7 +23,7 @@
     <ul class="folder-tree">
       <transition-group name="slide-in-out" mode="out-in">
         <FolderTree
-          v-for="(childFolder, index) in folder.children"
+          v-for="(childFolder, index) in folder.folders"
           :folder="childFolder"
           :openFolder="openFolder"
           v-bind:key="index"

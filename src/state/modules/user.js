@@ -39,8 +39,8 @@ export const actions = {
     }
     return axios.get(`${apiUrl}/v1/user`)
       .then(response => {
-        commit('SET_USER', response.data)
-        return response.data
+        commit('SET_USER', response.data.data)
+        return response.data.data
       })
       .catch(() => {
         commit('SET_USER', null)

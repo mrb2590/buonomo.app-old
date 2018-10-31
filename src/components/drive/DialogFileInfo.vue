@@ -16,11 +16,11 @@
         </v-avatar>
       </v-card-title>
 
-      <v-card-title class="headline" v-if="file">{{ file.display_filename }}</v-card-title>
+      <v-card-title class="headline" v-if="file">{{ file.name }}</v-card-title>
 
       <v-card-text class="file-info" v-if="file">
         <ul>
-          <li>Size: {{ file.size_readable }}</li>
+          <li>Size: {{ file.formatted_size }}</li>
           <li>Owner: {{ file.owned_by.first_name }} {{ file.owned_by.last_name }}</li>
         </ul>
         <div>

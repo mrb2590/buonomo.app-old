@@ -6,8 +6,8 @@
       </v-avatar>
     </div>
     <div class="ftext">
-      <div class="subheading" :title="file.display_filename">{{ file.display_filename }}</div>
-      <div class="caption">{{ file.size_readable }}</div>
+      <div class="subheading" :title="file.name">{{ file.name }}</div>
+      <div class="caption">{{ file.formatted_size }}</div>
     </div>
     <div class="fbtn">
       <v-menu

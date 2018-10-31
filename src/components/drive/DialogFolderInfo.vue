@@ -20,7 +20,7 @@
 
       <v-card-text class="folder-info" v-if="folder">
         <ul>
-          <li>Size: 100 MB</li>
+          <li>Size: {{ folder.formatted_size }}</li>
           <li>Owner: {{ folder.owned_by.first_name }} {{ folder.owned_by.last_name }}</li>
         </ul>
         <div>

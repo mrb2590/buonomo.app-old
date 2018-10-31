@@ -14,7 +14,7 @@
           flat
           v-if="folder"
           @click="upFolder()"
-          :disabled="!folder.parent_id"
+          :disabled="!folder.folder_id"
         >
           <v-icon>expand_less</v-icon>
         </v-btn>
@@ -50,8 +50,8 @@ export default {
 
   methods: {
     upFolder: function () {
-      if (this.folder.parent_id) {
-        this.openNewFolder(this.folder.parent_id)
+      if (this.folder.folder_id) {
+        this.openNewFolder(this.folder.folder_id)
       }
     }
   }
@@ -59,5 +59,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+.v-toolbar {
+  background-color: transparent;
+}
+.theme--dark.v-toolbar {
+  background-color: transparent;
+}
 </style>
