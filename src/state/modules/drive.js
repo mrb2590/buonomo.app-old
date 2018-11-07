@@ -7,7 +7,10 @@ var apiUrl = process.env.VUE_APP_API_URL
 export const state = {
   openFolder: null,
   tree: null,
-  loadingOpenFolder: true
+  loadingOpenFolder: true,
+  show: {
+    dropzone: false
+  }
 }
 
 export const getters = {
@@ -20,10 +23,11 @@ export const mutations = {
   SET_FOLDER (state, newValue) {
     state.openFolder = newValue // Keep by reference
     if (newValue) {
-      state.openFolder.folders = sortByKey(state.openFolder.folders, 'name')
-      state.openFolder.files = sortByKey(state.openFolder.files, 'name')
+      state.openFolder.folders = sortByKey(newValue.folders, 'name')
+      state.openFolder.files = sortByKey(newValue.files, 'name')
     }
   },
+
   ADD_CHILD_FOLDER (state, folder) {
     // Add child folder to folder
     state.openFolder.folders.push(lang.cloneDeep(folder))
@@ -33,18 +37,24 @@ export const mutations = {
     // if (parent) parent.folders.push(lang.cloneDeep(folder))
     // parent.folders = sortByKey(parent.folders, 'name')
   },
+
   SET_TREE (state, newValue) {
     state.tree = lang.cloneDeep(newValue)
   },
+
   ADD_FOLDER_CHILREN_TO_TREE (state, folder) {
     let foundFolder = searchTree(state.tree, folder.id)
     foundFolder.folders = lang.cloneDeep(folder.folders)
+    foundFolder.files = lang.cloneDeep(folder.files)
     state.tree = lang.cloneDeep(state.tree)
     foundFolder.folders = sortByKey(foundFolder.folders, 'name')
+    foundFolder.files = sortByKey(foundFolder.files, 'name')
   },
+
   SET_LOADING_OPEN_FOLDER (state, newValue) {
     state.loadingOpenFolder = newValue
   },
+
   UPDATE_FOLDER_NAME (state, { folder, newValue }) {
     folder.name = newValue
     let foundFolder = searchTree(state.tree, folder.id)
@@ -55,12 +65,17 @@ export const mutations = {
     }
     state.openFolder.folders = sortByKey(state.openFolder.folders, 'name')
   },
+
   REMOVE_FOLDER (state, folder) {
     for (var i = 0; i < state.openFolder.folders.length; i++) {
       if (state.openFolder.folders[i].id === folder.id) {
         state.openFolder.folders.splice(i, 1)
       }
     }
+  },
+
+  SET_SHOW_DROPZONE (state, newValue) {
+    state.show.dropzone = newValue
   }
 }
 
@@ -73,7 +88,7 @@ export const actions = {
     }
   },
 
-  fetchFolder ({ commit, state, dispatch }, {
+  async fetchFolder ({ commit, state, dispatch }, {
     folderId,
     force = false,
     setCurrent = true,
@@ -109,7 +124,7 @@ export const actions = {
       })
   },
 
-  downloadFolder ({ state }, folderId) {
+  async downloadFolder ({ state }, folderId) {
     return axios.get(`${apiUrl}/v1/drive/folders/${folderId}/download`, {
       responseType: 'arraybuffer'
     })
@@ -132,7 +147,7 @@ export const actions = {
       })
   },
 
-  downloadFile ({ state }, file) {
+  async downloadFile ({ state }, file) {
     return axios.get(`${apiUrl}/v1/drive/files/${file.id}/download`, {
       responseType: 'arraybuffer'
     })
@@ -155,7 +170,7 @@ export const actions = {
       })
   },
 
-  createFolder ({ commit }, { name = null, folderId = null }) {
+  async createFolder ({ commit }, { name = null, folderId = null }) {
     return axios.post(`${apiUrl}/v1/drive/folders`, {
       name: name,
       folder_id: folderId
@@ -174,7 +189,7 @@ export const actions = {
       })
   },
 
-  renameFolder ({ state, commit }, { folder, name }) {
+  async renameFolder ({ state, commit }, { folder, name }) {
     return axios.patch(`${apiUrl}/v1/drive/folders/${folder.id}`, { name: name })
       .then(response => {
         commit('UPDATE_FOLDER_NAME', {
@@ -192,7 +207,7 @@ export const actions = {
       })
   },
 
-  trashFolder ({ state, commit }, folder) {
+  async trashFolder ({ state, commit }, folder) {
     if (folder.folder_id === null) {
       this.commit('app/SET_SNACKBAR', {
         show: true,

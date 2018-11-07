@@ -64,6 +64,7 @@ export default {
   .v-card__title {
     text-align: center;
     justify-content: center;
+    word-break: break-all;
   }
 
   .file-info {

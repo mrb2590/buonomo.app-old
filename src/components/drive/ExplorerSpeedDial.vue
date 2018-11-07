@@ -47,7 +47,13 @@
       <v-icon>cloud_download</v-icon>
     </v-btn>
 
-    <v-btn fab dark small color="accent">
+    <v-btn
+      fab
+      dark
+      small
+      color="accent"
+      @click="$store.commit('drive/SET_SHOW_DROPZONE', true)"
+    >
       <v-icon>cloud_upload</v-icon>
     </v-btn>
 

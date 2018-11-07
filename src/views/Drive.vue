@@ -8,6 +8,7 @@
 
     <!-- <FolderBreadcrumb :folder="openFolder"/> -->
     <div class="drive-container" :class="{ 'sidebar-open': sidebarOpen }">
+      <Dropzone v-if="openFolder" />
       <div class="sidebar">
         <ul class="folder-tree">
           <FolderTree
@@ -30,6 +31,12 @@
         <transition name="fade">
           <v-container fluid v-show="!loadingOpenFolder">
             <v-layout row wrap v-if="openFolder">
+              <v-flex xs12>
+                Used {{ $store.state.user.user.formatted_used_drive_bytes }} of {{ $store.state.user.user.formatted_allocated_drive_bytes }}
+              </v-flex>
+              <v-flex xs12>
+                <v-progress-linear :value="this.$store.state.user.user.allocated_drive_bytes / this.$store.state.user.user.used_drive_bytes"></v-progress-linear>
+              </v-flex>
               <v-flex xs12>
                 <div>
                   <small>{{ openFolder.path }}</small>
@@ -84,6 +91,7 @@ import DialogCreateFolder from '../components/drive/DialogCreateFolder'
 import DialogFileInfo from '../components/drive/DialogFileInfo'
 import DialogFolderInfo from '../components/drive/DialogFolderInfo'
 import DialogRenameFolder from '../components/drive/DialogRenameFolder'
+import Dropzone from '../components/drive/Dropzone'
 import ExplorerSpeedDial from '../components/drive/ExplorerSpeedDial'
 import ExplorerToolbar from '../components/drive/ExplorerToolbar'
 import File from '../components/drive/File'
@@ -125,7 +133,8 @@ export default {
     DialogCreateFolder,
     DialogFolderInfo,
     DialogFileInfo,
-    DialogRenameFolder
+    DialogRenameFolder,
+    Dropzone
   },
 
   computed: {

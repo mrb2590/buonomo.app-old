@@ -1,5 +1,5 @@
 <template>
-  <v-app :dark="darkMode">
+  <v-app :dark="darkMode" :class="{ 'dropzone-open': $store.state.drive.show.dropzone }">
     <v-navigation-drawer
       persistent
       :mini-variant="miniDrawer"
