@@ -19,6 +19,10 @@
           >
           </FolderTree>
         </ul>
+        <div class="drive-storage">
+          <v-progress-linear :value="this.$store.state.user.user.allocated_drive_bytes / this.$store.state.user.user.used_drive_bytes"></v-progress-linear>
+          Used {{ $store.state.user.user.formatted_used_drive_bytes }} of {{ $store.state.user.user.formatted_allocated_drive_bytes }}
+        </div>
       </div>
       <div class="explorer">
         <transition name="fade">
@@ -31,12 +35,6 @@
         <transition name="fade">
           <v-container fluid v-show="!loadingOpenFolder">
             <v-layout row wrap v-if="openFolder">
-              <v-flex xs12>
-                Used {{ $store.state.user.user.formatted_used_drive_bytes }} of {{ $store.state.user.user.formatted_allocated_drive_bytes }}
-              </v-flex>
-              <v-flex xs12>
-                <v-progress-linear :value="this.$store.state.user.user.allocated_drive_bytes / this.$store.state.user.user.used_drive_bytes"></v-progress-linear>
-              </v-flex>
               <v-flex xs12>
                 <div>
                   <small>{{ openFolder.path }}</small>
@@ -72,7 +70,7 @@
 
     <ExplorerSpeedDial
       :folder="openFolder"
-      @downloadFolder="downloadFolder(openFolder.id)"
+      @downloadFolder="downloadFolder(openFolder)"
       @showDialogFolderInfo="setShowDialogFolderInfo(true); infoFolder = openFolder"
       @showDialogCreateFolder="setShowDialogCreateFolder"
       @showDialogRenameFolder="setShowDialogRenameFolder(true); infoFolder = openFolder"
@@ -194,6 +192,11 @@ export default {
 </script>
 
 <style>
+.sidebar > .folder-tree {
+  height: calc(100% - 57px);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
 .sidebar > .folder-tree > li {
   border-left: 0 !important;
 }
@@ -245,6 +248,13 @@ export default {
       padding: 0 8px 8px;
     }
   }
+}
+
+.drive-storage {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  width: calc(100% - 16px);
 }
 
 .drive-container.sidebar-open {

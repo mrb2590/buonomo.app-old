@@ -38,6 +38,12 @@ export const mutations = {
     // parent.folders = sortByKey(parent.folders, 'name')
   },
 
+  ADD_CHILD_FILE (state, file) {
+    // Add child folder to folder
+    state.openFolder.files.push(lang.cloneDeep(file))
+    state.openFolder.files = sortByKey(state.openFolder.files, 'name')
+  },
+
   SET_TREE (state, newValue) {
     state.tree = lang.cloneDeep(newValue)
   },
@@ -124,8 +130,8 @@ export const actions = {
       })
   },
 
-  async downloadFolder ({ state }, folderId) {
-    return axios.get(`${apiUrl}/v1/drive/folders/${folderId}/download`, {
+  async downloadFolder ({ state }, folder) {
+    return axios.get(`${apiUrl}/v1/drive/folders/${folder.id}/download`, {
       responseType: 'arraybuffer'
     })
       .then(response => {
@@ -134,7 +140,7 @@ export const actions = {
         let windowUrl = window.URL || window.webkitURL
         let url = windowUrl.createObjectURL(blob)
         anchor.setAttribute('href', url)
-        anchor.setAttribute('download', response.data.data.filename)
+        anchor.setAttribute('download', `${folder.name}.zip`)
         anchor.click()
       })
       .catch(() => {

@@ -4,10 +4,11 @@
       <v-icon dark>close</v-icon>
     </v-btn>
     <vue-dropzone
-      ref="myVueDropzone"
+      ref="mainDropzone"
       id="dropzone"
       :options="dropzoneOptions"
       @vdropzone-queue-complete="$store.commit('drive/SET_SHOW_DROPZONE', false)"
+      @vdropzone-success="uploadSuccess"
     ></vue-dropzone>
   </div>
 </template>
@@ -53,6 +54,12 @@ export default {
     dragenter: function (e) {
       e.preventDefault()
       this.$store.commit('drive/SET_SHOW_DROPZONE', true)
+    },
+
+    uploadSuccess: function (file, response) {
+      console.log('fsfsf')
+      this.$refs.mainDropzone.removeAllFiles()
+      this.$store.commit('drive/ADD_CHILD_FILE', response.data)
     }
   },
 

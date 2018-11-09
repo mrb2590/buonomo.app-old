@@ -31,7 +31,7 @@
             <v-icon>info</v-icon>
           </v-list-tile>
 
-          <v-list-tile @click="downloadFolder(folder.id)">
+          <v-list-tile @click="downloadFolder(folder)">
             <v-list-tile-title>Download</v-list-tile-title>
             <v-icon>cloud_download</v-icon>
           </v-list-tile>
