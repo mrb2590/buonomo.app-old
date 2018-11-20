@@ -12,6 +12,7 @@
       color="accent"
       dark
       fab
+      title="Folder Options"
     >
       <v-icon medium>folder_open</v-icon>
       <v-icon medium>close</v-icon>
@@ -21,38 +22,9 @@
       fab
       dark
       small
-      color="accent"
-      @click="$emit('trashFolder')"
-    >
-      <v-icon>delete</v-icon>
-    </v-btn>
-
-    <v-btn
-      fab
-      dark
-      small
-      color="accent"
-      @click="$emit('showDialogCreateFolder', true)"
-    >
-      <v-icon>create_new_folder</v-icon>
-    </v-btn>
-
-    <v-btn
-      fab
-      dark
-      small
-      color="accent"
-      @click="$emit('downloadFolder')"
-    >
-      <v-icon>cloud_download</v-icon>
-    </v-btn>
-
-    <v-btn
-      fab
-      dark
-      small
-      color="accent"
+      color="indigo"
       @click="$store.commit('drive/SET_SHOW_DROPZONE', true)"
+      title="Upload Files"
     >
       <v-icon>cloud_upload</v-icon>
     </v-btn>
@@ -61,8 +33,9 @@
       fab
       dark
       small
-      color="accent"
+      color="cyan"
       @click="$emit('showDialogRenameFolder', true)"
+      title="Rename Folder"
     >
       <v-icon>create</v-icon>
     </v-btn>
@@ -71,10 +44,44 @@
       fab
       dark
       small
-      color="accent"
+      color="green"
+      @click="$emit('showDialogCreateFolder', true)"
+      title="Create Folder"
+    >
+      <v-icon>create_new_folder</v-icon>
+    </v-btn>
+
+    <v-btn
+      fab
+      dark
+      small
+      color="lime"
+      @click="$emit('downloadFolder')"
+      title="Download Folder"
+    >
+      <v-icon>cloud_download</v-icon>
+    </v-btn>
+
+    <v-btn
+      fab
+      dark
+      small
+      color="orange"
       @click="$emit('showDialogFolderInfo')"
+      title="Folder Info"
     >
       <v-icon>info</v-icon>
+    </v-btn>
+
+    <v-btn
+      fab
+      dark
+      small
+      color="red"
+      @click="$emit('trashFolder')"
+      title="Trash Folder"
+    >
+      <v-icon>delete</v-icon>
     </v-btn>
   </v-speed-dial>
 </template>
@@ -97,7 +104,7 @@ export default {
   .v-speed-dial {
     bottom: -16px;
     transform: none;
-    right: 24px;
+    right: 16px;
 
     .v-btn__content > i {
       top: -14px !important;

@@ -7,7 +7,7 @@
       ref="mainDropzone"
       id="dropzone"
       :options="dropzoneOptions"
-      @vdropzone-queue-complete="$store.commit('drive/SET_SHOW_DROPZONE', false)"
+      @vdropzone-queue-complete="queueComplete"
       @vdropzone-success="uploadSuccess"
     ></vue-dropzone>
   </div>
@@ -56,9 +56,12 @@ export default {
       this.$store.commit('drive/SET_SHOW_DROPZONE', true)
     },
 
-    uploadSuccess: function (file, response) {
-      console.log('fsfsf')
+    queueComplete: function (file, response) {
       this.$refs.mainDropzone.removeAllFiles()
+      this.$store.commit('drive/SET_SHOW_DROPZONE', false)
+    },
+
+    uploadSuccess: function (file, response) {
       this.$store.commit('drive/ADD_CHILD_FILE', response.data)
     }
   },
@@ -75,6 +78,7 @@ export default {
 
 <style lang="scss">
 .dropzone-wrapper {
+  background: rgba(0, 0, 0, 0.6);
   position: fixed;
   top: 0;
   left: 0;
@@ -83,11 +87,12 @@ export default {
   z-index: 1000;
 
   .dropzone {
+    background: rgba(0, 0, 0, 0);
     height: 100%;
     width: 100%;
-    background: rgba(0, 0, 0, 0.6);
+    border: none;
 
-    .dz-message {
+    > .dz-message {
       font-size: 24px;
       color: #000;
       display: block;
@@ -96,7 +101,8 @@ export default {
       top: 50%;
       width: 100%;
       transform: translateY(-50%);
-      background: #fff;
+      color: #fff;
+      font-weight: 100;
       margin: 0;
     }
 

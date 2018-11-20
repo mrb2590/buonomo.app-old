@@ -1,5 +1,5 @@
 <template>
-  <div class="drive">
+  <div class="drive" @keyup="checkKeyboardShortcuts(e)" @keydown="checkKeyboardShortcuts(e)">
     <ExplorerToolbar
       :folder="openFolder"
       :openNewFolder="openNewFolder"
@@ -40,6 +40,10 @@
                   <small>{{ openFolder.path }}</small>
                 </div>
               </v-flex>
+              <v-flex xs12>
+                <div class="title explorer-title">Folders</div>
+                <div class="body-1 explorer-title" v-if="!openFolder.folders.length">There are no folders to show.</div>
+              </v-flex>
               <v-flex xs12 sm12 md6 lg4 xl3
                 v-for="(childFolder, index) in openFolder.folders"
                 v-bind:key="`folder-${index}`"
@@ -51,6 +55,10 @@
                   @showDialogFolderInfo="setShowDialogFolderInfo"
                   @showDialogRenameFolder="setShowDialogRenameFolder"
                 />
+              </v-flex>
+              <v-flex xs12>
+                <div class="title explorer-title">Files</div>
+                <div class="body-1 explorer-title" v-if="!openFolder.files.length">There are no files to show.</div>
               </v-flex>
               <v-flex xs12 sm12 md6 lg4 xl3
                 v-for="(file, index) in openFolder.files"
@@ -118,7 +126,8 @@ export default {
     showDialogCreateFolder: false,
     showDialogFolderInfo: false,
     showDialogRenameFolder: false,
-    showDialogFileInfo: false
+    showDialogFileInfo: false,
+    keyboardShortcutMap: {}
   }),
 
   components: {
@@ -180,6 +189,28 @@ export default {
 
     toggleSidebar () {
       this.sidebarOpen = !this.sidebarOpen
+    },
+
+    checkKeyboardShortcuts: function (e) {
+      this.keyboardShortcutMap[e.keyCode] = e.type === 'keydown'
+
+      // Show upload file dialog
+      // Shift + f
+      if (this.keyboardShortcutMap[16] && this.keyboardShortcutMap[70]) {
+        this.$store.commit('drive/SET_SHOW_DROPZONE', true)
+      }
+
+      // Show create folder dialog
+      // Shift + n
+      if (this.keyboardShortcutMap[16] && this.keyboardShortcutMap[78]) {
+        this.setShowDialogCreateFolder(true)
+      }
+
+      // Close file dialog
+      // Esc
+      if (this.keyboardShortcutMap[27]) {
+        this.$store.commit('drive/SET_SHOW_DROPZONE', false)
+      }
     }
   },
 
@@ -187,6 +218,12 @@ export default {
     if (!this.openFolder && this.user) {
       this.openNewFolder(this.user.folder_id)
     }
+
+    window.onkeydown = window.onkeyup = this.checkKeyboardShortcuts
+  },
+
+  destroyed () {
+    window.onkeydown = window.onkeyup = null
   }
 }
 </script>
@@ -217,10 +254,10 @@ export default {
 
   .sidebar, .explorer {
     height: calc(100vh - 164px);
+    transition: all 0.3s ease-in-out;
   }
 
   .sidebar {
-    transition: left 0.3s ease-in-out;
     width: 350px;
     left: -100%;
     padding: 8px;
@@ -237,7 +274,6 @@ export default {
   }
 
   .explorer {
-    transition: all 0.3s ease-in-out;
     width: 100%;
     position: absolute;
     overflow: auto;
@@ -246,6 +282,10 @@ export default {
     .container {
       height: 100%;
       padding: 0 8px 8px;
+    }
+
+    .explorer-title {
+      margin: 14px 12px;
     }
   }
 }
@@ -296,6 +336,13 @@ export default {
 
 @media (max-width: 599px) {
   .drive-container {
+    .sidebar {
+      width: 100%;
+      left: 0;
+      bottom: -100%;
+      z-index: 2;
+    }
+
     .explorer {
       width: 100% !important;
       left: 0 !important;
@@ -304,10 +351,15 @@ export default {
         padding: 0;
       }
     }
+  }
+
+  .drive-container.sidebar-open {
+    .explorer {
+      width: 100%;
+    }
 
     .sidebar {
-      width: 100%;
-      z-index: 2;
+      bottom: 60px;
     }
   }
 }

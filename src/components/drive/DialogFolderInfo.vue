@@ -2,7 +2,7 @@
   <v-dialog
     class="info-dialog"
     v-model="$parent.showDialogFolderInfo"
-    max-width="290"
+    max-width="350"
     :fullscreen="$store.state.app.dialogFullscreen"
     scrollable
   >
@@ -19,13 +19,29 @@
       <v-card-title class="headline" v-if="folder">{{ folder.name }}</v-card-title>
 
       <v-card-text class="folder-info" v-if="folder">
-        <ul>
-          <li>Size: {{ folder.formatted_size }}</li>
-          <li>Owner: {{ folder.owned_by.first_name }} {{ folder.owned_by.last_name }}</li>
-        </ul>
-        <div>
-          {{ folder.owned_by.first_name }} {{ folder.owned_by.last_name }} created this folder on {{ moment(folder.created_at).format('MMMM Do, YYYY') }}
-        </div>
+        <div class="subheading font-weight-bold">Type</div>
+        <div class="body-1">folder</div>
+
+        <div class="subheading font-weight-bold">Size</div>
+        <div class="body-1">{{ folder.formatted_size }}</div>
+
+        <div class="subheading font-weight-bold">Path</div>
+        <div class="body-1">{{ folder.path }}</div>
+
+        <div class="subheading font-weight-bold">Owned by</div>
+        <div class="body-1">{{ folder.owned_by.first_name }} {{ folder.owned_by.last_name }}</div>
+
+        <div class="subheading font-weight-bold">Created by</div>
+        <div class="body-1">{{ folder.created_by.first_name }} {{ folder.created_by.last_name }}</div>
+
+        <div class="subheading font-weight-bold">Created on</div>
+        <div class="body-1">{{ moment(folder.created_at*1000).format('MMMM Do, YYYY h:m a') }}</div>
+
+        <div class="subheading font-weight-bold">Last updated by</div>
+        <div class="body-1">{{ folder.updated_by.first_name }} {{ folder.updated_by.last_name }}</div>
+
+        <div class="subheading font-weight-bold">Last updated on</div>
+        <div class="body-1">{{ moment(folder.updated_at*1000).format('MMMM Do, YYYY h:m a') }}</div>
       </v-card-text>
 
       <v-card-actions>
@@ -69,6 +85,16 @@ export default {
 
   .folder-info {
     height: 100%;
+    max-height: 200px;
+
+    > .subheading {
+      margin-bottom: 2px;
+    }
+
+    > .body-1:not(:last-child) {
+      margin-bottom: 14px;
+      word-break: break-all;
+    }
 
     ul {
       list-style: none;
@@ -77,6 +103,14 @@ export default {
       > li {
         margin-bottom: 8px;
       }
+    }
+  }
+}
+
+@media (max-width: 599px) {
+  .v-dialog {
+    .folder-info {
+      max-height: 100%;
     }
   }
 }

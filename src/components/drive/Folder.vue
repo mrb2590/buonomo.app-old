@@ -1,5 +1,5 @@
 <template>
-  <div class="folder" @click="openNewFolder(folder.id)">
+  <div class="folder elevation-1" @click="openNewFolder(folder.id)">
     <div class="ficon">
       <v-avatar color="primary">
         <v-icon dark>folder</v-icon>
@@ -43,7 +43,7 @@
 
           <v-list-tile>
             <v-list-tile-title>Move to</v-list-tile-title>
-            <v-icon>folder_open</v-icon>
+            <v-icon>folder</v-icon>
           </v-list-tile>
 
           <v-list-tile>
@@ -140,18 +140,24 @@ export default {
 }
 
 @media (max-width: 599px) {
+  // .folder {
+  //   width: 100%;
+  //   margin: 0;
+  //   border-left: none !important;
+  //   border-right: none !important;
+  //   border-top: none !important;
+  //   padding-top: 12px;
+  //   padding-bottom: 12px;
+  //   padding-left: 16px;
+  //   padding-right: 16px;
+  //   border-radius: 0;
+  //   border-color: #e0e0e0;
+  // }
+
   .folder {
-    width: 100%;
-    margin: 0;
-    border-left: none !important;
-    border-right: none !important;
-    border-top: none !important;
-    padding-top: 12px;
-    padding-bottom: 12px;
-    padding-left: 16px;
-    padding-right: 16px;
-    border-radius: 0;
-    border-color: #e0e0e0;
+    margin-left: 12px;
+    margin-right: 12px;
+    width: calc(100% - 24px);
   }
 
   .theme--dark .folder {
