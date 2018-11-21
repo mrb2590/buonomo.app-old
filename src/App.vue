@@ -141,8 +141,8 @@
 </template>
 
 <script>
-import appConfig from './app.config'
-import { authComputed, userComputed } from './state/helpers'
+import appConfig from './app.config';
+import { authComputed, userComputed } from './state/helpers';
 
 export default {
   name: 'App',
@@ -150,9 +150,9 @@ export default {
   page: {
     // All subcomponent titles will be injected into this template.
     titleTemplate (title) {
-      title = typeof title === 'function' ? title(this.$store) : title
-      this.title = title
-      return title ? `${title} | ${appConfig.title}` : appConfig.title
+      title = typeof title === 'function' ? title(this.$store) : title;
+      this.title = title;
+      return title ? `${title} | ${appConfig.title}` : appConfig.title;
     }
   },
 
@@ -168,29 +168,29 @@ export default {
 
     darkMode: {
       get () {
-        return this.$store.state.preferences.darkMode
+        return this.$store.state.preferences.darkMode;
       },
       set (newValue) {
-        this.$store.commit('preferences/SET_DARK_MODE', newValue)
+        this.$store.commit('preferences/SET_DARK_MODE', newValue);
       }
     },
 
     snackbar: {
       get () {
-        return this.$store.state.app.snackbar
+        return this.$store.state.app.snackbar;
       },
       set (newValue) {
-        this.$store.commit('app/SET_SNACKBAR', newValue)
+        this.$store.commit('app/SET_SNACKBAR', newValue);
       }
     }
   },
 
   methods: {
     resetSnackbar () {
-      this.$store.commit('app/RESET_SNACKBAR')
+      this.$store.commit('app/RESET_SNACKBAR');
     }
   }
-}
+};
 </script>
 
 <style lang="scss">

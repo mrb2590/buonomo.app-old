@@ -1,5 +1,5 @@
-import Vue from 'vue'
-import colors from 'vuetify/es5/util/colors'
+import Vue from 'vue';
+import colors from 'vuetify/es5/util/colors';
 import {
   Vuetify,
   VApp,
@@ -26,8 +26,8 @@ import {
   VMenu,
   VDialog,
   VSnackbar
-} from 'vuetify'
-import 'vuetify/src/stylus/app.styl'
+} from 'vuetify';
+import 'vuetify/src/stylus/app.styl';
 
 Vue.use(Vuetify, {
   components: {
@@ -67,4 +67,4 @@ Vue.use(Vuetify, {
   },
   customProperties: true,
   iconfont: 'md'
-})
+});

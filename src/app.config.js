@@ -5,4 +5,4 @@
 module.exports = {
   title: 'Buonomo',
   description: 'My app built with Vue.'
-}
+};

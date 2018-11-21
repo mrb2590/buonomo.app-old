@@ -57,7 +57,7 @@
 </template>
 
 <script>
-import { driveMethods } from '../../state/helpers'
+import { driveMethods } from '../../state/helpers';
 
 export default {
   name: 'Folder',
@@ -67,18 +67,18 @@ export default {
   data () {
     return {
       showDialogFileInfo: false
-    }
+    };
   },
 
   methods: {
     ...driveMethods,
 
     setShowDialogFileInfo () {
-      this.$emit('showInfoFile', this.file)
-      this.$emit('showDialogFileInfo', true)
+      this.$emit('showInfoFile', this.file);
+      this.$emit('showDialogFileInfo', true);
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

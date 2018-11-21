@@ -57,9 +57,9 @@
 </template>
 
 <script>
-import { validationMixin } from 'vuelidate'
-import { required, email } from 'vuelidate/lib/validators'
-import { authMethods, authComputed } from '../state/helpers'
+import { validationMixin } from 'vuelidate';
+import { required, email } from 'vuelidate/lib/validators';
+import { authMethods, authComputed } from '../state/helpers';
 
 export default {
   name: 'SignIn',
@@ -103,26 +103,26 @@ export default {
 
     remember: {
       get () {
-        return this.$store.state.auth.remember
+        return this.$store.state.auth.remember;
       },
       set (newValue) {
-        this.$store.commit('auth/SET_REMEMBER', newValue)
+        this.$store.commit('auth/SET_REMEMBER', newValue);
       }
     },
 
     emailErrors () {
-      const errors = []
-      if (!this.$v.form.email.$dirty) return errors
-      !this.$v.form.email.email && errors.push('Must be a valid email')
-      !this.$v.form.email.required && errors.push('Email is required')
-      return errors
+      const errors = [];
+      if (!this.$v.form.email.$dirty) return errors;
+      !this.$v.form.email.email && errors.push('Must be a valid email');
+      !this.$v.form.email.required && errors.push('Email is required');
+      return errors;
     },
 
     passwordErrors () {
-      const errors = []
-      if (!this.$v.form.password.$dirty) return errors
-      !this.$v.form.password.required && errors.push('Password is required')
-      return errors
+      const errors = [];
+      if (!this.$v.form.password.$dirty) return errors;
+      !this.$v.form.password.required && errors.push('Password is required');
+      return errors;
     }
   },
 
@@ -130,15 +130,15 @@ export default {
     ...authMethods,
 
     validate () {
-      this.$v.$touch()
+      this.$v.$touch();
 
       if (!this.$v.$invalid) {
-        this.submit()
+        this.submit();
       }
     },
 
     submit () {
-      this.sending = true
+      this.sending = true;
 
       return this.signIn({
         email: this.form.email,
@@ -146,45 +146,45 @@ export default {
         remember: this.remember
       })
         .then(token => {
-          this.sending = false
-          this.clear()
+          this.sending = false;
+          this.clear();
           // Redirect to the originally requested page, or to the home page
-          this.$router.push(this.$route.query.redirectFrom || { name: 'profile' })
+          this.$router.push(this.$route.query.redirectFrom || { name: 'profile' });
         })
         .catch(error => {
-          this.sending = false
+          this.sending = false;
           if (error.response.status === 401) {
             this.$store.commit('app/SET_SNACKBAR', {
               show: true,
               text: 'Access denied.'
-            })
+            });
           } else {
             this.$store.commit('app/SET_SNACKBAR', {
               show: true,
               color: 'error',
               closeColor: 'white',
               text: 'Failed to authenticate!'
-            })
+            });
           }
-        })
+        });
     },
 
     clear () {
-      this.$v.$reset()
-      this.form.email = ''
-      this.form.password = ''
-      this.form.isClear = true
+      this.$v.$reset();
+      this.form.email = '';
+      this.form.password = '';
+      this.form.isClear = true;
     },
 
     checkFormClear () {
       if (this.form.email === '' && this.form.password === '') {
-        this.form.isClear = true
+        this.form.isClear = true;
       } else {
-        this.form.isClear = false
+        this.form.isClear = false;
       }
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

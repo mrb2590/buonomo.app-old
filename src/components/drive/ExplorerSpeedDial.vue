@@ -22,7 +22,7 @@
       fab
       dark
       small
-      color="indigo"
+      color="teal"
       @click="$store.commit('drive/SET_SHOW_DROPZONE', true)"
       title="Upload Files"
     >
@@ -55,7 +55,7 @@
       fab
       dark
       small
-      color="lime"
+      color="indigo"
       @click="$emit('downloadFolder')"
       title="Download Folder"
     >
@@ -66,7 +66,7 @@
       fab
       dark
       small
-      color="orange"
+      color="purple"
       @click="$emit('showDialogFolderInfo')"
       title="Folder Info"
     >
@@ -95,9 +95,9 @@ export default {
   data () {
     return {
       speedDial: false
-    }
+    };
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

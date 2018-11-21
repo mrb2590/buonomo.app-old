@@ -62,7 +62,7 @@
 </template>
 
 <script>
-import { driveMethods } from '../../state/helpers'
+import { driveMethods } from '../../state/helpers';
 
 export default {
   name: 'Folder',
@@ -72,23 +72,23 @@ export default {
   data () {
     return {
       showDialogFolderInfo: false
-    }
+    };
   },
 
   methods: {
     ...driveMethods,
 
     setShowDialogFolderInfo () {
-      this.$emit('showInfoFolder', this.folder)
-      this.$emit('showDialogFolderInfo', true)
+      this.$emit('showInfoFolder', this.folder);
+      this.$emit('showDialogFolderInfo', true);
     },
 
     setShowDialogRenameFolder () {
-      this.$emit('showInfoFolder', this.folder)
-      this.$emit('showDialogRenameFolder', true)
+      this.$emit('showInfoFolder', this.folder);
+      this.$emit('showDialogRenameFolder', true);
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

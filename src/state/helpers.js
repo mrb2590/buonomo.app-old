@@ -1,4 +1,4 @@
-import { mapState, mapGetters, mapActions } from 'vuex'
+import { mapState, mapGetters, mapActions } from 'vuex';
 
 // Preferences
 export const preferencesComputed = {
@@ -6,9 +6,9 @@ export const preferencesComputed = {
     preferences: state => state
   }),
   ...mapGetters('preferences', [])
-}
+};
 
-export const preferencesMethods = mapActions('preferences', [])
+export const preferencesMethods = mapActions('preferences', []);
 
 // Auth
 export const authComputed = {
@@ -16,9 +16,9 @@ export const authComputed = {
     token: state => state.token
   }),
   ...mapGetters('auth', ['signedIn'])
-}
+};
 
-export const authMethods = mapActions('auth', ['signIn', 'signOut'])
+export const authMethods = mapActions('auth', ['signIn', 'signOut']);
 
 // User
 export const userComputed = {
@@ -26,9 +26,9 @@ export const userComputed = {
     user: state => state.user
   }),
   ...mapGetters('user', ['fullName', 'initials', 'formatDate'])
-}
+};
 
-export const userMethods = mapActions('user', ['fetchUser'])
+export const userMethods = mapActions('user', ['fetchUser']);
 
 // Drive
 export const driveComputed = {
@@ -38,7 +38,7 @@ export const driveComputed = {
     loadingOpenFolder: state => state.loadingOpenFolder
   }),
   ...mapGetters('drive', ['formatDate'])
-}
+};
 
 export const driveMethods = mapActions('drive', [
   'updateTree',
@@ -48,4 +48,4 @@ export const driveMethods = mapActions('drive', [
   'createFolder',
   'renameFolder',
   'trashFolder'
-])
+]);

@@ -14,9 +14,9 @@
 </template>
 
 <script>
-import { driveMethods } from '../../state/helpers'
-import vue2Dropzone from 'vue2-dropzone'
-import 'vue2-dropzone/dist/vue2Dropzone.min.css'
+import { driveMethods } from '../../state/helpers';
+import vue2Dropzone from 'vue2-dropzone';
+import 'vue2-dropzone/dist/vue2Dropzone.min.css';
 
 export default {
   name: 'Dropzone',
@@ -38,10 +38,10 @@ export default {
         params: () => {
           return {
             folder_id: this.$store.state.drive.openFolder.id
-          }
+          };
         }
       }
-    }
+    };
   },
 
   components: {
@@ -52,28 +52,28 @@ export default {
     ...driveMethods,
 
     dragenter: function (e) {
-      e.preventDefault()
-      this.$store.commit('drive/SET_SHOW_DROPZONE', true)
+      e.preventDefault();
+      this.$store.commit('drive/SET_SHOW_DROPZONE', true);
     },
 
     queueComplete: function (file, response) {
-      this.$refs.mainDropzone.removeAllFiles()
-      this.$store.commit('drive/SET_SHOW_DROPZONE', false)
+      this.$refs.mainDropzone.removeAllFiles();
+      this.$store.commit('drive/SET_SHOW_DROPZONE', false);
     },
 
     uploadSuccess: function (file, response) {
-      this.$store.commit('drive/ADD_CHILD_FILE', response.data)
+      this.$store.commit('drive/ADD_CHILD_FILE', response.data);
     }
   },
 
   mounted () {
-    window.addEventListener('dragenter', this.dragenter)
+    window.addEventListener('dragenter', this.dragenter);
   },
 
   destroyed () {
-    window.removeEventListener('dragenter', this.dragenter)
+    window.removeEventListener('dragenter', this.dragenter);
   }
-}
+};
 </script>
 
 <style lang="scss">

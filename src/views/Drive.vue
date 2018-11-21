@@ -93,18 +93,18 @@
 </template>
 
 <script>
-import DialogCreateFolder from '../components/drive/DialogCreateFolder'
-import DialogFileInfo from '../components/drive/DialogFileInfo'
-import DialogFolderInfo from '../components/drive/DialogFolderInfo'
-import DialogRenameFolder from '../components/drive/DialogRenameFolder'
-import Dropzone from '../components/drive/Dropzone'
-import ExplorerSpeedDial from '../components/drive/ExplorerSpeedDial'
-import ExplorerToolbar from '../components/drive/ExplorerToolbar'
-import File from '../components/drive/File'
-import Folder from '../components/drive/Folder'
-import FolderBreadcrumb from '../components/drive/FolderBreadcrumb'
-import FolderTree from '../components/drive/FolderTree'
-import { userComputed, driveComputed, driveMethods } from '../state/helpers'
+import DialogCreateFolder from '../components/drive/DialogCreateFolder';
+import DialogFileInfo from '../components/drive/DialogFileInfo';
+import DialogFolderInfo from '../components/drive/DialogFolderInfo';
+import DialogRenameFolder from '../components/drive/DialogRenameFolder';
+import Dropzone from '../components/drive/Dropzone';
+import ExplorerSpeedDial from '../components/drive/ExplorerSpeedDial';
+import ExplorerToolbar from '../components/drive/ExplorerToolbar';
+import File from '../components/drive/File';
+import Folder from '../components/drive/Folder';
+import FolderBreadcrumb from '../components/drive/FolderBreadcrumb';
+import FolderTree from '../components/drive/FolderTree';
+import { userComputed, driveComputed, driveMethods } from '../state/helpers';
 
 export default {
   name: 'Drive',
@@ -153,27 +153,27 @@ export default {
     ...driveMethods,
 
     setShowDialogCreateFolder (value) {
-      this.showDialogCreateFolder = value
+      this.showDialogCreateFolder = value;
     },
 
     setShowDialogFolderInfo (value) {
-      this.showDialogFolderInfo = value
+      this.showDialogFolderInfo = value;
     },
 
     setShowDialogRenameFolder (value) {
-      this.showDialogRenameFolder = value
+      this.showDialogRenameFolder = value;
     },
 
     setShowInfoFolder (value) {
-      this.infoFolder = value
+      this.infoFolder = value;
     },
 
     setShowDialogFileInfo (value) {
-      this.showDialogFileInfo = value
+      this.showDialogFileInfo = value;
     },
 
     setShowInfoFile (value) {
-      this.infoFile = value
+      this.infoFile = value;
     },
 
     openNewFolder: function (folderId, force = false) {
@@ -182,50 +182,52 @@ export default {
         force: force
       }).then(response => {
         if (window.innerWidth < 600) {
-          this.sidebarOpen = false
+          this.sidebarOpen = false;
         }
-      })
+      });
     },
 
     toggleSidebar () {
-      this.sidebarOpen = !this.sidebarOpen
+      this.sidebarOpen = !this.sidebarOpen;
     },
 
     checkKeyboardShortcuts: function (e) {
-      this.keyboardShortcutMap[e.keyCode] = e.type === 'keydown'
+      this.keyboardShortcutMap[e.keyCode] = e.type === 'keydown';
 
       // Show upload file dialog
       // Shift + f
       if (this.keyboardShortcutMap[16] && this.keyboardShortcutMap[70]) {
-        this.$store.commit('drive/SET_SHOW_DROPZONE', true)
+        this.$store.commit('drive/SET_SHOW_DROPZONE', true);
       }
 
       // Show create folder dialog
       // Shift + n
       if (this.keyboardShortcutMap[16] && this.keyboardShortcutMap[78]) {
-        this.setShowDialogCreateFolder(true)
+        this.setShowDialogCreateFolder(true);
       }
 
       // Close file dialog
       // Esc
       if (this.keyboardShortcutMap[27]) {
-        this.$store.commit('drive/SET_SHOW_DROPZONE', false)
+        this.$store.commit('drive/SET_SHOW_DROPZONE', false);
       }
     }
   },
 
   created () {
     if (!this.openFolder && this.user) {
-      this.openNewFolder(this.user.folder_id)
+      this.openNewFolder(this.user.folder_id);
     }
 
-    window.onkeydown = window.onkeyup = this.checkKeyboardShortcuts
+    // Init keyboard shortcut listeners
+    window.onkeydown = window.onkeyup = this.checkKeyboardShortcuts;
   },
 
   destroyed () {
-    window.onkeydown = window.onkeyup = null
+    // Destroy keyboard shortcut listeners
+    window.onkeydown = window.onkeyup = null;
   }
-}
+};
 </script>
 
 <style>

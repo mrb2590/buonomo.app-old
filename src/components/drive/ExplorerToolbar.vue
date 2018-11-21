@@ -45,17 +45,17 @@ export default {
   data () {
     return {
       breadcrumb: []
-    }
+    };
   },
 
   methods: {
     upFolder: function () {
       if (this.folder.folder_id) {
-        this.openNewFolder(this.folder.folder_id)
+        this.openNewFolder(this.folder.folder_id);
       }
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

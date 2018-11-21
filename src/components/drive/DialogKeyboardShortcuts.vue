@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import moment from 'moment'
+import moment from 'moment';
 
 export default {
   name: 'DialogFolderInfo',
@@ -52,7 +52,7 @@ export default {
   methods: {
     moment
   }
-}
+};
 </script>
 
 <style lang="scss" >

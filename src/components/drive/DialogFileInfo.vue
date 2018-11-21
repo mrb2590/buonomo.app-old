@@ -58,7 +58,7 @@
 </template>
 
 <script>
-import moment from 'moment'
+import moment from 'moment';
 
 export default {
   name: 'DialogFileInfo',
@@ -68,7 +68,7 @@ export default {
   methods: {
     moment
   }
-}
+};
 </script>
 
 <style lang="scss" >

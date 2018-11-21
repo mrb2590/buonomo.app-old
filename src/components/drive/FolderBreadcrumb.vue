@@ -19,12 +19,12 @@ export default {
   data () {
     return {
       breadcrumb: []
-    }
+    };
   },
 
   methods: {
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

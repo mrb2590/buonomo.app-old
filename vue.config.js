@@ -1,4 +1,4 @@
-const appConfig = require('./src/app.config')
+const appConfig = require('./src/app.config');
 
 module.exports = {
   configureWebpack: {
@@ -10,4 +10,4 @@ module.exports = {
   css: {
     sourceMap: true
   }
-}
+};

@@ -47,9 +47,9 @@
 </template>
 
 <script>
-import { validationMixin } from 'vuelidate'
-import { required, maxLength } from 'vuelidate/lib/validators'
-import { driveMethods } from '../../state/helpers'
+import { validationMixin } from 'vuelidate';
+import { required, maxLength } from 'vuelidate/lib/validators';
+import { driveMethods } from '../../state/helpers';
 
 export default {
   name: 'DialogCreateFolder',
@@ -78,12 +78,12 @@ export default {
 
   computed: {
     folderNameErrors () {
-      const errors = []
-      if (!this.$v.form.folderName.$dirty) return errors
-      !this.$v.form.folderName.required && errors.push('Folder name is required')
+      const errors = [];
+      if (!this.$v.form.folderName.$dirty) return errors;
+      !this.$v.form.folderName.required && errors.push('Folder name is required');
       !this.$v.form.folderName.maxLength &&
-        errors.push('Folder name cannot be longer than 255 characters')
-      return errors
+        errors.push('Folder name cannot be longer than 255 characters');
+      return errors;
     }
   },
 
@@ -91,43 +91,43 @@ export default {
     ...driveMethods,
 
     validate () {
-      this.$v.$touch()
+      this.$v.$touch();
 
       if (!this.$v.$invalid) {
-        this.submit()
+        this.submit();
       }
     },
 
     submit () {
-      this.sending = true
-      this.sendingError = false
+      this.sending = true;
+      this.sendingError = false;
 
       return this.createFolder({
         name: this.form.folderName,
         folderId: this.$store.state.drive.openFolder.id
       })
         .then(folder => {
-          this.sending = false
-          this.clear()
-          this.closeDialog()
+          this.sending = false;
+          this.clear();
+          this.closeDialog();
         })
         .catch(() => {
-          this.sending = false
-          this.sendingError = 'Something went wrong.'
-        })
+          this.sending = false;
+          this.sendingError = 'Something went wrong.';
+        });
     },
 
     clear () {
-      this.$v.$reset()
-      this.form.folderName = ''
+      this.$v.$reset();
+      this.form.folderName = '';
     },
 
     closeDialog () {
-      this.$emit('showDialogCreateFolder', false)
-      this.clear()
+      this.$emit('showDialogCreateFolder', false);
+      this.clear();
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
