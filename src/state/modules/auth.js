@@ -38,7 +38,7 @@ export const actions = {
   },
 
   // Logs in the current user.
-  async signIn ({ commit, dispatch, getters }, { email, password, remember } = {}) {
+  signIn ({ commit, dispatch, getters }, { email, password, remember } = {}) {
     if (getters.loggedIn) return dispatch('validate');
     return axios.post(`${apiUrl}/oauth/token`, {
       grant_type: 'password',
@@ -64,7 +64,7 @@ export const actions = {
 
   // Validates the current user's token and refreshes it
   // with new data from the API.
-  async validate ({ commit, state }) {
+  validate ({ commit, state }) {
     // Check if token is set
     if (!state.token) return Promise.resolve(null);
     // If the token is expired, try to refresh it

@@ -33,7 +33,7 @@ export const mutations = {
 };
 
 export const actions = {
-  async fetchUser ({ commit, state }, force = false) {
+  fetchUser ({ commit, state }, force = false) {
     if (!force && state.user) {
       return;
     }

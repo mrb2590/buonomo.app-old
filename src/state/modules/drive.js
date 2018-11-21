@@ -102,7 +102,7 @@ export const actions = {
     }
   },
 
-  async fetchFolder ({ commit, state, dispatch }, {
+  fetchFolder ({ commit, state, dispatch }, {
     folderId,
     force = false,
     setCurrent = true,
@@ -138,7 +138,7 @@ export const actions = {
       });
   },
 
-  async downloadFolder ({ state }, folder) {
+  downloadFolder ({ state }, folder) {
     return axios.get(`${apiUrl}/v1/drive/folders/${folder.id}/download`, {
       responseType: 'arraybuffer'
     })
@@ -161,7 +161,7 @@ export const actions = {
       });
   },
 
-  async downloadFile ({ state }, file) {
+  downloadFile ({ state }, file) {
     return axios.get(`${apiUrl}/v1/drive/files/${file.id}/download`, {
       responseType: 'arraybuffer'
     })
@@ -184,7 +184,7 @@ export const actions = {
       });
   },
 
-  async createFolder ({ commit }, { name = null, folderId = null }) {
+  createFolder ({ commit }, { name = null, folderId = null }) {
     return axios.post(`${apiUrl}/v1/drive/folders`, {
       name: name,
       folder_id: folderId
@@ -203,7 +203,7 @@ export const actions = {
       });
   },
 
-  async renameFolder ({ state, commit }, { folder, name }) {
+  renameFolder ({ state, commit }, { folder, name }) {
     return axios.patch(`${apiUrl}/v1/drive/folders/${folder.id}`, { name: name })
       .then(response => {
         commit('UPDATE_FOLDER_NAME', {
@@ -221,7 +221,7 @@ export const actions = {
       });
   },
 
-  async trashFolder ({ state, commit }, folder) {
+  trashFolder ({ state, commit }, folder) {
     if (folder.folder_id === null) {
       this.commit('app/SET_SNACKBAR', {
         show: true,
@@ -263,7 +263,7 @@ export const actions = {
       });
   },
 
-  async trashFile ({ state, commit }, file) {
+  trashFile ({ state, commit }, file) {
     return axios.delete(`${apiUrl}/v1/drive/files/${file.id}/trash`)
       .then(response => {
         commit('REMOVE_FILE', file);
