@@ -4,11 +4,17 @@
       :folder="openFolder"
       :openNewFolder="openNewFolder"
       @toggleSidebar="toggleSidebar()"
+      @downloadFolder="downloadFolder(openFolder)"
+      @showDialogFolderInfo="setShowDialogFolderInfo(true); infoFolder = openFolder"
+      @showDialogCreateFolder="setShowDialogCreateFolder"
+      @showDialogRenameFolder="setShowDialogRenameFolder(true); infoFolder = openFolder"
+      @trashFolder="trashFolder(openFolder)"
     />
 
-    <!-- <FolderBreadcrumb :folder="openFolder"/> -->
     <div class="drive-container" :class="{ 'sidebar-open': sidebarOpen }">
+
       <Dropzone v-if="openFolder" />
+
       <div class="sidebar">
         <ul class="folder-tree">
           <FolderTree
@@ -24,6 +30,7 @@
           Used {{ $store.state.user.user.formatted_used_drive_bytes }} of {{ $store.state.user.user.formatted_allocated_drive_bytes }}
         </div>
       </div>
+
       <div class="explorer">
         <transition name="fade">
           <div class="center-align-outer" v-show="loadingOpenFolder">
@@ -32,18 +39,16 @@
             </div>
           </div>
         </transition>
+
         <transition name="fade">
           <v-container fluid v-show="!loadingOpenFolder">
             <v-layout row wrap v-if="openFolder">
-              <v-flex xs12>
-                <div>
-                  <small>{{ openFolder.path }}</small>
-                </div>
-              </v-flex>
+
               <v-flex xs12>
                 <div class="title explorer-title">Folders</div>
                 <div class="body-1 explorer-title" v-if="!openFolder.folders.length">There are no folders to show.</div>
               </v-flex>
+
               <v-flex xs12 sm12 md6 lg4 xl3
                 v-for="(childFolder, index) in openFolder.folders"
                 v-bind:key="`folder-${index}`"
@@ -56,10 +61,12 @@
                   @showDialogRenameFolder="setShowDialogRenameFolder"
                 />
               </v-flex>
+
               <v-flex xs12>
                 <div class="title explorer-title">Files</div>
                 <div class="body-1 explorer-title" v-if="!openFolder.files.length">There are no files to show.</div>
               </v-flex>
+
               <v-flex xs12 sm12 md6 lg4 xl3
                 v-for="(file, index) in openFolder.files"
                 v-bind:key="`file-${index}`"
@@ -70,20 +77,12 @@
                   @showDialogFileInfo="setShowDialogFileInfo"
                 />
               </v-flex>
+
             </v-layout>
           </v-container>
         </transition>
       </div>
     </div>
-
-    <ExplorerSpeedDial
-      :folder="openFolder"
-      @downloadFolder="downloadFolder(openFolder)"
-      @showDialogFolderInfo="setShowDialogFolderInfo(true); infoFolder = openFolder"
-      @showDialogCreateFolder="setShowDialogCreateFolder"
-      @showDialogRenameFolder="setShowDialogRenameFolder(true); infoFolder = openFolder"
-      @trashFolder="trashFolder(openFolder)"
-    />
 
     <DialogRenameFolder :folder="infoFolder" @showDialogRenameFolder="setShowDialogRenameFolder"/>
     <DialogCreateFolder @showDialogCreateFolder="setShowDialogCreateFolder"/>
@@ -98,11 +97,9 @@ import DialogFileInfo from '../components/drive/DialogFileInfo';
 import DialogFolderInfo from '../components/drive/DialogFolderInfo';
 import DialogRenameFolder from '../components/drive/DialogRenameFolder';
 import Dropzone from '../components/drive/Dropzone';
-import ExplorerSpeedDial from '../components/drive/ExplorerSpeedDial';
 import ExplorerToolbar from '../components/drive/ExplorerToolbar';
 import File from '../components/drive/File';
 import Folder from '../components/drive/Folder';
-import FolderBreadcrumb from '../components/drive/FolderBreadcrumb';
 import FolderTree from '../components/drive/FolderTree';
 import { userComputed, driveComputed, driveMethods } from '../state/helpers';
 
@@ -134,9 +131,7 @@ export default {
     File,
     Folder,
     FolderTree,
-    FolderBreadcrumb,
     ExplorerToolbar,
-    ExplorerSpeedDial,
     DialogCreateFolder,
     DialogFolderInfo,
     DialogFileInfo,

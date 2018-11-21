@@ -31,6 +31,61 @@
         >
           <v-icon>list</v-icon>
         </v-btn>
+
+        <v-menu
+          bottom
+          left
+          origin="top right"
+          transition="scale-transition"
+          min-width="200"
+          @click.native.stop
+        >
+          <v-btn flat slot="activator">
+            <v-icon>more_vert</v-icon>
+          </v-btn>
+
+          <v-list>
+            <v-list-tile @click="$emit('showDialogFolderInfo')">
+              <v-list-tile-title>Info</v-list-tile-title>
+              <v-icon>info</v-icon>
+            </v-list-tile>
+
+            <v-list-tile @click="$emit('downloadFolder')">
+              <v-list-tile-title>Download Folder</v-list-tile-title>
+              <v-icon>cloud_download</v-icon>
+            </v-list-tile>
+
+            <v-list-tile @click="$store.commit('drive/SET_SHOW_DROPZONE', true)">
+              <v-list-tile-title>Upload Files</v-list-tile-title>
+              <v-icon>cloud_upload</v-icon>
+            </v-list-tile>
+
+            <v-list-tile @click="$emit('showDialogRenameFolder', true)">
+              <v-list-tile-title>Rename</v-list-tile-title>
+              <v-icon>create</v-icon>
+            </v-list-tile>
+
+            <v-list-tile @click="$emit('showDialogCreateFolder', true)">
+              <v-list-tile-title>Create Folder</v-list-tile-title>
+              <v-icon>create_new_folder</v-icon>
+            </v-list-tile>
+
+            <v-list-tile>
+              <v-list-tile-title>Move to</v-list-tile-title>
+              <v-icon>folder</v-icon>
+            </v-list-tile>
+
+            <v-list-tile>
+              <v-list-tile-title>Share</v-list-tile-title>
+              <v-icon>share</v-icon>
+            </v-list-tile>
+
+            <v-list-tile @click="$emit('trashFolder')">
+              <v-list-tile-title>Trash</v-list-tile-title>
+              <v-icon>delete</v-icon>
+            </v-list-tile>
+          </v-list>
+        </v-menu>
       </v-btn-toggle>
     </v-toolbar>
   </div>

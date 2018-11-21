@@ -22,6 +22,7 @@
             <v-list-tile-content>
               <v-list-tile-title>{{ fullName }}</v-list-tile-title>
             </v-list-tile-content>
+
             <v-list-tile-action>
               <v-btn icon ripple>
                 <v-icon color="grey lighten-1">notifications</v-icon>
@@ -31,6 +32,7 @@
         </v-list>
       </v-toolbar>
       <v-list>
+
         <v-list-tile
           value="true"
           to="/signin"
@@ -94,6 +96,7 @@
             <v-list-tile-title>Drive</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
+
       </v-list>
     </v-navigation-drawer>
 
@@ -115,8 +118,12 @@
       </transition>
     </v-content>
 
-    <v-footer class="pa-2" fixed app inset>
-      <div>&copy; {{ new Date().getFullYear() }}</div>
+    <v-footer fixed app inset>
+      <div class="footer-text"
+        v-if="$store.state.drive.openFolder && $route.meta.displayName === 'Drive'"
+      >
+        {{ this.$store.state.drive.openFolder.path }}
+      </div>
     </v-footer>
 
     <v-snackbar
@@ -208,5 +215,12 @@ a[class=""]:hover {
 
 .main-content {
   overflow: hidden;
+}
+
+.footer-text {
+  padding: 8px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 </style>

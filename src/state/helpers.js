@@ -47,5 +47,6 @@ export const driveMethods = mapActions('drive', [
   'downloadFile',
   'createFolder',
   'renameFolder',
-  'trashFolder'
+  'trashFolder',
+  'trashFile'
 ]);

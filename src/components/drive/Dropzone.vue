@@ -59,6 +59,7 @@ export default {
     queueComplete: function (file, response) {
       this.$refs.mainDropzone.removeAllFiles();
       this.$store.commit('drive/SET_SHOW_DROPZONE', false);
+      this.$store.dispatch('user/fetchUser', true);
     },
 
     uploadSuccess: function (file, response) {
