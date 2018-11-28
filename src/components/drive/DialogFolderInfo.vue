@@ -19,6 +19,9 @@
       <v-card-title class="headline" v-if="folder">{{ folder.name }}</v-card-title>
 
       <v-card-text class="folder-info" v-if="folder">
+        <div class="subheading font-weight-bold">ID</div>
+        <div class="body-1">{{ folder.id }}</div>
+
         <div class="subheading font-weight-bold">Type</div>
         <div class="body-1">folder</div>
 
@@ -85,7 +88,7 @@ export default {
 
   .folder-info {
     height: 100%;
-    max-height: 200px;
+    max-height: 300px;
 
     > .subheading {
       margin-bottom: 2px;

@@ -19,6 +19,9 @@
       <v-card-title class="headline" v-if="file">{{ file.name }}</v-card-title>
 
       <v-card-text class="file-info" v-if="file">
+        <div class="subheading font-weight-bold">ID</div>
+        <div class="body-1">{{ file.id }}</div>
+
         <div class="subheading font-weight-bold">Type</div>
         <div class="body-1">{{ file.extension }}</div>
 
@@ -85,7 +88,7 @@ export default {
 
   .file-info {
     height: 100%;
-    max-height: 200px;
+    max-height: 300px;
 
     > .subheading {
       margin-bottom: 2px;
