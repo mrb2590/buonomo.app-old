@@ -24,12 +24,13 @@ export default {
   data () {
     return {
       dropzoneOptions: {
-        url: 'https://dev.api.buonomo.app/v1/drive/files',
+        url: `${process.env.VUE_APP_API_URL}/v1/drive/files`,
         thumbnailWidth: 150,
         addRemoveLinks: true,
         maxFilesize: 107374, // 100 GB
         maxFiles: 50,
         filesizeBase: 1024,
+        parallelUploads: 1,
         timeout: 0,
         headers: {
           Authorization: `Bearer ${this.$store.state.auth.token.access_token}`,

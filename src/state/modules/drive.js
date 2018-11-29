@@ -242,7 +242,7 @@ export const actions = {
 
         return axios.delete(`${apiUrl}/v1/drive/folders/${folder.id}`)
           .then(response => {
-            //
+            this.dispatch('user/fetchUser', true);
           })
           .catch(() => {
             this.commit('app/SET_SNACKBAR', {
@@ -270,7 +270,7 @@ export const actions = {
 
         return axios.delete(`${apiUrl}/v1/drive/files/${file.id}`)
           .then(response => {
-            //
+            this.dispatch('user/fetchUser', true);
           })
           .catch(() => {
             this.commit('app/SET_SNACKBAR', {

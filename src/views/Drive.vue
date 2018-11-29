@@ -26,7 +26,7 @@
           </FolderTree>
         </ul>
         <div class="drive-storage">
-          <v-progress-linear :value="this.$store.state.user.user.allocated_drive_bytes / this.$store.state.user.user.used_drive_bytes"></v-progress-linear>
+          <v-progress-linear :value="this.$store.state.user.user.used_drive_bytes / this.$store.state.user.user.allocated_drive_bytes * 100"></v-progress-linear>
           Used {{ $store.state.user.user.formatted_used_drive_bytes }} of {{ $store.state.user.user.formatted_allocated_drive_bytes }}
         </div>
       </div>
