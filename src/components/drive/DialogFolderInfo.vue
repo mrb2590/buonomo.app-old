@@ -9,10 +9,10 @@
     <v-card>
       <v-card-title class="headline">
         <v-avatar
-          :size="100"
+          :size="60"
           color="primary"
         >
-          <v-icon :size="60" dark>folder</v-icon>
+          <v-icon :size="40" dark>folder</v-icon>
         </v-avatar>
       </v-card-title>
 
@@ -88,7 +88,7 @@ export default {
 
   .folder-info {
     height: 100%;
-    max-height: 300px;
+    max-height: 400px;
 
     > .subheading {
       margin-bottom: 2px;

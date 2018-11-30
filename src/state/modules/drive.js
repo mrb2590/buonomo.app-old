@@ -20,7 +20,7 @@ export const getters = {
 };
 
 export const mutations = {
-  SET_FOLDER (state, newValue) {
+  SET_OPEN_FOLDER (state, newValue) {
     state.openFolder = newValue; // Keep by reference
     if (newValue) {
       state.openFolder.folders = sortByKey(newValue.folders, 'name');
@@ -28,24 +28,36 @@ export const mutations = {
     }
   },
 
-  ADD_CHILD_FOLDER (state, folder) {
-    // Add child folder to folder
-    state.openFolder.folders.push(lang.cloneDeep(folder));
-    state.openFolder.folders = sortByKey(state.openFolder.folders, 'name');
-    // Add child folder to tree
-    // let parent = searchTree(state.tree, state.openFolder.id)
-    // if (parent) parent.folders.push(lang.cloneDeep(folder))
-    // parent.folders = sortByKey(parent.folders, 'name')
-  },
-
-  ADD_CHILD_FILE (state, file) {
-    // Add child folder to folder
-    state.openFolder.files.push(lang.cloneDeep(file));
-    state.openFolder.files = sortByKey(state.openFolder.files, 'name');
+  SET_FOLDER_ATTRIBUTE (state, { folder, attribute, newValue }) {
+    folder[attribute] = newValue;
   },
 
   SET_TREE (state, newValue) {
     state.tree = lang.cloneDeep(newValue);
+  },
+
+  SET_LOADING_OPEN_FOLDER (state, newValue) {
+    state.loadingOpenFolder = newValue;
+  },
+
+  SET_SHOW_DROPZONE (state, newValue) {
+    state.show.dropzone = newValue;
+  },
+
+  ADD_FOLDER_TO_OPEN_FOLDER (state, folder) {
+    state.openFolder.folders.push(lang.cloneDeep(folder));
+    state.openFolder.folders = sortByKey(state.openFolder.folders, 'name');
+  },
+
+  ADD_FILE_TO_OPEN_FOLDER (state, file) {
+    state.openFolder.files.push(lang.cloneDeep(file));
+    state.openFolder.files = sortByKey(state.openFolder.files, 'name');
+
+    // Update parent folder sizes
+    recursiveForEachParent(state.tree, file.folder_id, (parentFolder) => {
+      parentFolder.size += file.size;
+      parentFolder.formatted_size = formatBytes(parentFolder.size);
+    });
   },
 
   ADD_FOLDER_CHILREN_TO_TREE (state, folder) {
@@ -55,10 +67,6 @@ export const mutations = {
     state.tree = lang.cloneDeep(state.tree);
     foundFolder.folders = sortByKey(foundFolder.folders, 'name');
     foundFolder.files = sortByKey(foundFolder.files, 'name');
-  },
-
-  SET_LOADING_OPEN_FOLDER (state, newValue) {
-    state.loadingOpenFolder = newValue;
   },
 
   UPDATE_FOLDER_NAME (state, { folder, newValue }) {
@@ -72,7 +80,7 @@ export const mutations = {
     state.openFolder.folders = sortByKey(state.openFolder.folders, 'name');
   },
 
-  REMOVE_FOLDER (state, folder) {
+  REMOVE_FOLDER_FROM_OPEN_FOLDER (state, folder) {
     for (var i = 0; i < state.openFolder.folders.length; i++) {
       if (state.openFolder.folders[i].id === folder.id) {
         state.openFolder.folders.splice(i, 1);
@@ -80,16 +88,12 @@ export const mutations = {
     }
   },
 
-  REMOVE_FILE (state, file) {
+  REMOVE_FILE_FROM_OPEN_FOLDER (state, file) {
     for (var i = 0; i < state.openFolder.files.length; i++) {
       if (state.openFolder.files[i].id === file.id) {
         state.openFolder.files.splice(i, 1);
       }
     }
-  },
-
-  SET_SHOW_DROPZONE (state, newValue) {
-    state.show.dropzone = newValue;
   }
 };
 
@@ -113,7 +117,7 @@ export const actions = {
     if (!force) {
       let folder = searchTree(state.tree, folderId);
       if (folder.folders) {
-        if (setCurrent) commit('SET_FOLDER', folder);
+        if (setCurrent) commit('SET_OPEN_FOLDER', folder);
         if (!expanding) setTimeout(function () { commit('SET_LOADING_OPEN_FOLDER', false); }, 333);
         return Promise.resolve(folder);
       }
@@ -122,12 +126,12 @@ export const actions = {
       .then(response => {
         dispatch('updateTree', response.data.data);
         let folder = searchTree(state.tree, response.data.data.id);
-        if (setCurrent) commit('SET_FOLDER', folder);
+        if (setCurrent) commit('SET_OPEN_FOLDER', folder);
         if (!expanding) commit('SET_LOADING_OPEN_FOLDER', false);
         return response.data.data;
       })
       .catch(() => {
-        if (setCurrent) commit('SET_FOLDER', null);
+        if (setCurrent) commit('SET_OPEN_FOLDER', null);
         if (!expanding) commit('SET_LOADING_OPEN_FOLDER', false);
         this.commit('app/SET_SNACKBAR', {
           show: true,
@@ -190,8 +194,7 @@ export const actions = {
       folder_id: folderId
     })
       .then(response => {
-        commit('ADD_CHILD_FOLDER', response.data.data);
-        // commit('ADD_FOLDER_CHILREN_TO_TREE', response.data)
+        commit('ADD_FOLDER_TO_OPEN_FOLDER', response.data.data);
       })
       .catch(() => {
         this.commit('app/SET_SNACKBAR', {
@@ -221,7 +224,7 @@ export const actions = {
       });
   },
 
-  trashFolder ({ state, commit }, folder) {
+  trashFolder ({ state, commit, dispatch }, folder) {
     if (folder.folder_id === null) {
       this.commit('app/SET_SNACKBAR', {
         show: true,
@@ -229,64 +232,140 @@ export const actions = {
         closeColor: 'white',
         text: 'You cannot remove the root folder.'
       });
+
       return Promise.resolve(false);
     }
+
     return axios.delete(`${apiUrl}/v1/drive/folders/${folder.id}/trash`)
       .then(response => {
         // Open the parent folder since we are trashing the current one
         if (folder.id === state.openFolder.id) {
           let foundFolder = searchTree(state.tree, folder.folder_id);
-          commit('SET_FOLDER', foundFolder);
-        }
-        commit('REMOVE_FOLDER', folder);
 
-        return axios.delete(`${apiUrl}/v1/drive/folders/${folder.id}`)
-          .then(response => {
-            this.dispatch('user/fetchUser', true);
-          })
-          .catch(() => {
-            this.commit('app/SET_SNACKBAR', {
-              show: true,
-              color: 'error',
-              closeColor: 'white',
-              text: 'Failed to delete the folder!'
-            });
-          });
+          commit('SET_OPEN_FOLDER', foundFolder);
+        }
+        commit('REMOVE_FOLDER_FROM_OPEN_FOLDER', folder);
+
+        return dispatch('deleteFolder', folder);
       })
-      .catch(() => {
-        this.commit('app/SET_SNACKBAR', {
-          show: true,
-          color: 'error',
-          closeColor: 'white',
-          text: 'Failed to trash the folder!'
-        });
-      });
+      // .catch(() => {
+      //   this.commit('app/SET_SNACKBAR', {
+      //     show: true,
+      //     color: 'error',
+      //     closeColor: 'white',
+      //     text: 'Failed to trash the folder!'
+      //   });
+      // });
   },
 
-  trashFile ({ state, commit }, file) {
-    return axios.delete(`${apiUrl}/v1/drive/files/${file.id}/trash`)
-      .then(response => {
-        commit('REMOVE_FILE', file);
+  deleteFolder ({ state, commit }, folder) {
+    if (folder.folder_id === null) {
+      this.commit('app/SET_SNACKBAR', {
+        show: true,
+        color: 'error',
+        closeColor: 'white',
+        text: 'You cannot remove the root folder.'
+      });
 
-        return axios.delete(`${apiUrl}/v1/drive/files/${file.id}`)
-          .then(response => {
-            this.dispatch('user/fetchUser', true);
-          })
-          .catch(() => {
-            this.commit('app/SET_SNACKBAR', {
-              show: true,
-              color: 'error',
-              closeColor: 'white',
-              text: 'Failed to delete the file!'
+      return Promise.resolve(false);
+    }
+
+    return axios.delete(`${apiUrl}/v1/drive/folders/${folder.id}`)
+      .then(response => {
+        // Update all parent folder sizes
+        if (folder.folder_id) {
+          recursiveForEachParent(state.tree, folder.folder_id, (parentFolder) => {
+            let newFolderSize = parentFolder.size - folder.size;
+
+            commit('SET_FOLDER_ATTRIBUTE', {
+              folder: parentFolder,
+              attribute: 'size',
+              newValue: newFolderSize
+            });
+            commit('SET_FOLDER_ATTRIBUTE', {
+              folder: parentFolder,
+              attribute: 'formatted_size',
+              newValue: formatBytes(newFolderSize, 2)
             });
           });
+        }
+
+        // Update user's used drive bytes
+        let newUsedDriveBytes = this.state.user.user.used_drive_bytes - folder.size;
+
+        this.commit('user/SET_USER_ATTRIBUTE', {
+          attribute: 'used_drive_bytes',
+          newValue: newUsedDriveBytes
+        });
+        this.commit('user/SET_USER_ATTRIBUTE', {
+          attribute: 'formatted_used_drive_bytes',
+          newValue: formatBytes(newUsedDriveBytes, 2)
+        });
+      })
+      // .catch(() => {
+      //   this.commit('app/SET_SNACKBAR', {
+      //     show: true,
+      //     color: 'error',
+      //     closeColor: 'white',
+      //     text: 'Failed to delete the folder!'
+      //   });
+      // });
+  },
+
+  trashFile ({ state, commit, dispatch }, file) {
+    return axios.delete(`${apiUrl}/v1/drive/files/${file.id}/trash`)
+      .then(response => {
+        commit('REMOVE_FILE_FROM_OPEN_FOLDER', file);
+
+        return dispatch('deleteFile', file);
+      })
+      // .catch(() => {
+      //   this.commit('app/SET_SNACKBAR', {
+      //     show: true,
+      //     color: 'error',
+      //     closeColor: 'white',
+      //     text: 'Failed to trash the file!'
+      //   });
+      // });
+  },
+
+  deleteFile ({ state, commit }, file) {
+    return axios.delete(`${apiUrl}/v1/drive/files/${file.id}`)
+      .then(response => {
+        // Update all parent folder sizes
+        recursiveForEachParent(state.tree, file.folder_id, (parentFolder) => {
+          let newFolderSize = parentFolder.size - file.size;
+
+          commit('SET_FOLDER_ATTRIBUTE', {
+            folder: parentFolder,
+            attribute: 'size',
+            newValue: newFolderSize
+          });
+          commit('SET_FOLDER_ATTRIBUTE', {
+            folder: parentFolder,
+            attribute: 'formatted_size',
+            newValue: formatBytes(newFolderSize, 2)
+          });
+        });
+
+        // Update user's used drive bytes
+        let newUsedDriveBytes = this.state.user.user.used_drive_bytes - file.size;
+
+        this.commit('user/SET_USER_ATTRIBUTE', {
+          attribute: 'used_drive_bytes',
+          newValue: newUsedDriveBytes
+        });
+        this.commit('user/SET_USER_ATTRIBUTE', {
+          attribute: 'formatted_used_drive_bytes',
+          newValue: formatBytes(newUsedDriveBytes, 2)
+        });
       })
       .catch(() => {
         this.commit('app/SET_SNACKBAR', {
           show: true,
           color: 'error',
           closeColor: 'white',
-          text: 'Failed to trash the file!'
+          text: 'Failed to delete the file!'
         });
       });
   }
@@ -313,4 +392,23 @@ let sortByKey = (sortable = [], key = 'name') => {
       sensitivity: 'base'
     });
   });
+};
+
+let recursiveForEachParent = (tree, folderId, callback) => {
+  if (!folderId) return;
+
+  let parent = searchTree(tree, folderId);
+
+  callback(parent);
+
+  recursiveForEachParent(tree, parent.folder_id, callback);
+};
+
+let formatBytes = (bytes, decimals) => {
+  if (bytes === 0) return '0 Bytes';
+  let k = 1024;
+  let dm = decimals <= 0 ? 0 : decimals || 2;
+  let sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+  let i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 };

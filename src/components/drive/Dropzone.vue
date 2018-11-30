@@ -64,7 +64,7 @@ export default {
     },
 
     uploadSuccess: function (file, response) {
-      this.$store.commit('drive/ADD_CHILD_FILE', response.data);
+      this.$store.commit('drive/ADD_FILE_TO_OPEN_FOLDER', response.data);
     }
   },
 

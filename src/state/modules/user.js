@@ -29,6 +29,10 @@ export const getters = {
 export const mutations = {
   SET_USER (state, newValue) {
     state.user = lang.cloneDeep(newValue);
+  },
+
+  SET_USER_ATTRIBUTE (state, { attribute, newValue }) {
+    state.user[attribute] = newValue;
   }
 };
 
