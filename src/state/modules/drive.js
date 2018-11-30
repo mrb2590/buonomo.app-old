@@ -8,10 +8,14 @@ export const state = {
   openFolder: null,
   tree: null,
   loadingOpenFolder: true,
+  dialogRenameFile: null, // The file to rename
+  // Show.hide state of something
   show: {
-    dropzone: false
+    dropzone: false,
+    dialogRenameFile: false
   },
-  actions: {
+  // Current events happening (for animations usually)
+  events: {
     updatingFolderSizes: false
   }
 };
@@ -35,6 +39,10 @@ export const mutations = {
     folder[attribute] = newValue;
   },
 
+  SET_FILE_ATTRIBUTE (state, { file, attribute, newValue }) {
+    file[attribute] = newValue;
+  },
+
   SET_TREE (state, newValue) {
     state.tree = lang.cloneDeep(newValue);
   },
@@ -43,12 +51,20 @@ export const mutations = {
     state.loadingOpenFolder = newValue;
   },
 
+  SET_UPDATING_FOLDER_SIZES (state, newValue) {
+    state.events.updatingFolderSizes = newValue;
+  },
+
   SET_SHOW_DROPZONE (state, newValue) {
     state.show.dropzone = newValue;
   },
 
-  SET_UPDATING_FOLDER_SIZES (state, newValue) {
-    state.actions.updatingFolderSizes = newValue;
+  SET_DIALOG_RENAME_FILE (state, newValue) {
+    state.dialogRenameFile = newValue;
+  },
+
+  SET_SHOW_DIALOG_RENAME_FILE (state, newValue) {
+    state.show.dialogRenameFile = newValue;
   },
 
   ADD_FOLDER_TO_OPEN_FOLDER (state, folder) {
@@ -61,14 +77,14 @@ export const mutations = {
     state.openFolder.files = sortByKey(state.openFolder.files, 'name');
 
     // Update parent folder sizes
-    state.actions.updatingFolderSizes = true;
+    state.events.updatingFolderSizes = true;
 
     recursiveForEachParent(state.tree, file.folder_id, (parentFolder) => {
       parentFolder.size += file.size;
       parentFolder.formatted_size = formatBytes(parentFolder.size);
     });
 
-    state.actions.updatingFolderSizes = false;
+    state.events.updatingFolderSizes = false;
   },
 
   ADD_FOLDER_CHILREN_TO_TREE (state, folder) {
@@ -82,13 +98,12 @@ export const mutations = {
 
   UPDATE_FOLDER_NAME (state, { folder, newValue }) {
     folder.name = newValue;
-    let foundFolder = searchTree(state.tree, folder.id);
-    foundFolder.name = newValue;
+
+    // Sort parent folder in tree
     if (folder.folder_id) {
-      foundFolder = searchTree(state.tree, folder.folder_id);
+      let foundFolder = searchTree(state.tree, folder.folder_id);
       foundFolder.folders = sortByKey(foundFolder.folders, 'name');
     }
-    state.openFolder.folders = sortByKey(state.openFolder.folders, 'name');
   },
 
   REMOVE_FOLDER_FROM_OPEN_FOLDER (state, folder) {
@@ -230,7 +245,26 @@ export const actions = {
           show: true,
           color: 'error',
           closeColor: 'white',
-          text: 'Failed to trash the folder!'
+          text: 'Failed to rename the folder!'
+        });
+      });
+  },
+
+  renameFile ({ state, commit }, { file, name }) {
+    return axios.patch(`${apiUrl}/v1/drive/files/${file.id}`, { name: name })
+      .then(response => {
+        commit('SET_FILE_ATTRIBUTE', {
+          file: file,
+          attribute: 'name',
+          newValue: response.data.data.name
+        });
+      })
+      .catch(() => {
+        this.commit('app/SET_SNACKBAR', {
+          show: true,
+          color: 'error',
+          closeColor: 'white',
+          text: 'Failed to rename the folder!'
         });
       });
   },

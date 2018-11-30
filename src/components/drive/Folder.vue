@@ -42,8 +42,8 @@
           </v-list-tile>
 
           <v-list-tile>
-            <v-list-tile-title>Move to</v-list-tile-title>
-            <v-icon>folder</v-icon>
+            <v-list-tile-title>Move</v-list-tile-title>
+            <v-icon>trending_flat</v-icon>
           </v-list-tile>
 
           <v-list-tile>

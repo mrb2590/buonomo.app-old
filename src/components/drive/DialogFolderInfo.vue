@@ -26,10 +26,10 @@
         <div class="body-1">folder</div>
 
         <div class="subheading font-weight-bold">Size</div>
-        <div class="body-1" v-show="!$store.state.drive.actions.updatingFolderSizes">
+        <div class="body-1" v-show="!$store.state.drive.events.updatingFolderSizes">
           {{ folder.formatted_size }}
         </div>
-        <div class="body-1" v-show="$store.state.drive.actions.updatingFolderSizes">
+        <div class="body-1" v-show="$store.state.drive.events.updatingFolderSizes">
           <v-progress-circular
             indeterminate
             color="primary"

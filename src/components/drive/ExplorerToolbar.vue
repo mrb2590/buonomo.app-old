@@ -37,7 +37,7 @@
           left
           origin="top right"
           transition="scale-transition"
-          min-width="200"
+          min-width="150"
           @click.native.stop
         >
           <v-btn flat slot="activator">
@@ -45,19 +45,24 @@
           </v-btn>
 
           <v-list>
+            <v-list-tile @click="$store.commit('drive/SET_SHOW_DROPZONE', true)">
+              <v-list-tile-title>Upload</v-list-tile-title>
+              <v-icon>cloud_upload</v-icon>
+            </v-list-tile>
+
+            <v-list-tile @click="$emit('showDialogCreateFolder', true)">
+              <v-list-tile-title>New</v-list-tile-title>
+              <v-icon>create_new_folder</v-icon>
+            </v-list-tile>
+
             <v-list-tile @click="$emit('showDialogFolderInfo')">
               <v-list-tile-title>Info</v-list-tile-title>
               <v-icon>info</v-icon>
             </v-list-tile>
 
             <v-list-tile @click="$emit('downloadFolder')">
-              <v-list-tile-title>Download Folder</v-list-tile-title>
+              <v-list-tile-title>Download</v-list-tile-title>
               <v-icon>cloud_download</v-icon>
-            </v-list-tile>
-
-            <v-list-tile @click="$store.commit('drive/SET_SHOW_DROPZONE', true)">
-              <v-list-tile-title>Upload Files</v-list-tile-title>
-              <v-icon>cloud_upload</v-icon>
             </v-list-tile>
 
             <v-list-tile @click="$emit('showDialogRenameFolder', true)">
@@ -65,14 +70,9 @@
               <v-icon>create</v-icon>
             </v-list-tile>
 
-            <v-list-tile @click="$emit('showDialogCreateFolder', true)">
-              <v-list-tile-title>Create Folder</v-list-tile-title>
-              <v-icon>create_new_folder</v-icon>
-            </v-list-tile>
-
             <v-list-tile>
-              <v-list-tile-title>Move to</v-list-tile-title>
-              <v-icon>folder</v-icon>
+              <v-list-tile-title>Move</v-list-tile-title>
+              <v-icon>trending_flat</v-icon>
             </v-list-tile>
 
             <v-list-tile>

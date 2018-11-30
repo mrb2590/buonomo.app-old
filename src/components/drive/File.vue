@@ -6,7 +6,7 @@
       </v-avatar>
     </div>
     <div class="ftext">
-      <div class="subheading" :title="file.name">{{ file.name }}</div>
+      <div class="subheading" :title="file.name">{{ `${file.name}.${file.extension}` }}</div>
       <div class="caption">{{ file.formatted_size }}</div>
     </div>
     <div class="fbtn">
@@ -36,9 +36,14 @@
             <v-icon>cloud_download</v-icon>
           </v-list-tile>
 
+          <v-list-tile @click="showDialogRenameFile">
+            <v-list-tile-title>Rename</v-list-tile-title>
+            <v-icon>create</v-icon>
+          </v-list-tile>
+
           <v-list-tile>
-            <v-list-tile-title>Move to</v-list-tile-title>
-            <v-icon>folder</v-icon>
+            <v-list-tile-title>Move</v-list-tile-title>
+            <v-icon>trending_flat</v-icon>
           </v-list-tile>
 
           <v-list-tile>
@@ -72,6 +77,11 @@ export default {
 
   methods: {
     ...driveMethods,
+
+    showDialogRenameFile () {
+      this.$store.commit('drive/SET_SHOW_DIALOG_RENAME_FILE', true);
+      this.$store.commit('drive/SET_DIALOG_RENAME_FILE', this.file);
+    },
 
     setShowDialogFileInfo () {
       this.$emit('showInfoFile', this.file);

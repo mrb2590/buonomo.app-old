@@ -28,10 +28,10 @@
         <div class="drive-storage">
           <v-progress-linear :value="this.$store.state.user.user.used_drive_bytes / this.$store.state.user.user.allocated_drive_bytes * 100"></v-progress-linear>
           Used
-          <span v-show="!$store.state.drive.actions.updatingFolderSizes">
+          <span v-show="!$store.state.drive.events.updatingFolderSizes">
             {{ $store.state.user.user.formatted_used_drive_bytes }}
           </span>
-          <span v-show="$store.state.drive.actions.updatingFolderSizes">
+          <span v-show="$store.state.drive.events.updatingFolderSizes">
             <v-progress-circular
               indeterminate
               color="primary"
@@ -96,6 +96,7 @@
       </div>
     </div>
 
+    <DialogRenameFile />
     <DialogRenameFolder :folder="infoFolder" @showDialogRenameFolder="setShowDialogRenameFolder"/>
     <DialogCreateFolder @showDialogCreateFolder="setShowDialogCreateFolder"/>
     <DialogFolderInfo :folder="infoFolder" @showDialogFolderInfo="setShowDialogFolderInfo"/>
@@ -107,6 +108,7 @@
 import DialogCreateFolder from '../components/drive/DialogCreateFolder';
 import DialogFileInfo from '../components/drive/DialogFileInfo';
 import DialogFolderInfo from '../components/drive/DialogFolderInfo';
+import DialogRenameFile from '../components/drive/DialogRenameFile';
 import DialogRenameFolder from '../components/drive/DialogRenameFolder';
 import Dropzone from '../components/drive/Dropzone';
 import ExplorerToolbar from '../components/drive/ExplorerToolbar';
@@ -147,6 +149,7 @@ export default {
     DialogCreateFolder,
     DialogFolderInfo,
     DialogFileInfo,
+    DialogRenameFile,
     DialogRenameFolder,
     Dropzone
   },
