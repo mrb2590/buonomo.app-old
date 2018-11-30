@@ -27,7 +27,19 @@
         </ul>
         <div class="drive-storage">
           <v-progress-linear :value="this.$store.state.user.user.used_drive_bytes / this.$store.state.user.user.allocated_drive_bytes * 100"></v-progress-linear>
-          Used {{ $store.state.user.user.formatted_used_drive_bytes }} of {{ $store.state.user.user.formatted_allocated_drive_bytes }}
+          Used
+          <span v-show="!$store.state.drive.actions.updatingFolderSizes">
+            {{ $store.state.user.user.formatted_used_drive_bytes }}
+          </span>
+          <span v-show="$store.state.drive.actions.updatingFolderSizes">
+            <v-progress-circular
+              indeterminate
+              color="primary"
+              size="14"
+              :width="2"
+            ></v-progress-circular>
+          </span>
+          of {{ $store.state.user.user.formatted_allocated_drive_bytes }}
         </div>
       </div>
 

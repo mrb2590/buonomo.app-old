@@ -10,6 +10,9 @@ export const state = {
   loadingOpenFolder: true,
   show: {
     dropzone: false
+  },
+  actions: {
+    updatingFolderSizes: false
   }
 };
 
@@ -44,6 +47,10 @@ export const mutations = {
     state.show.dropzone = newValue;
   },
 
+  SET_UPDATING_FOLDER_SIZES (state, newValue) {
+    state.actions.updatingFolderSizes = newValue;
+  },
+
   ADD_FOLDER_TO_OPEN_FOLDER (state, folder) {
     state.openFolder.folders.push(lang.cloneDeep(folder));
     state.openFolder.folders = sortByKey(state.openFolder.folders, 'name');
@@ -54,10 +61,14 @@ export const mutations = {
     state.openFolder.files = sortByKey(state.openFolder.files, 'name');
 
     // Update parent folder sizes
+    state.actions.updatingFolderSizes = true;
+
     recursiveForEachParent(state.tree, file.folder_id, (parentFolder) => {
       parentFolder.size += file.size;
       parentFolder.formatted_size = formatBytes(parentFolder.size);
     });
+
+    state.actions.updatingFolderSizes = false;
   },
 
   ADD_FOLDER_CHILREN_TO_TREE (state, folder) {
@@ -248,14 +259,14 @@ export const actions = {
 
         return dispatch('deleteFolder', folder);
       })
-      // .catch(() => {
-      //   this.commit('app/SET_SNACKBAR', {
-      //     show: true,
-      //     color: 'error',
-      //     closeColor: 'white',
-      //     text: 'Failed to trash the folder!'
-      //   });
-      // });
+      .catch(() => {
+        this.commit('app/SET_SNACKBAR', {
+          show: true,
+          color: 'error',
+          closeColor: 'white',
+          text: 'Failed to trash the folder!'
+        });
+      });
   },
 
   deleteFolder ({ state, commit }, folder) {
@@ -269,6 +280,8 @@ export const actions = {
 
       return Promise.resolve(false);
     }
+
+    commit('SET_UPDATING_FOLDER_SIZES', true);
 
     return axios.delete(`${apiUrl}/v1/drive/folders/${folder.id}`)
       .then(response => {
@@ -301,15 +314,19 @@ export const actions = {
           attribute: 'formatted_used_drive_bytes',
           newValue: formatBytes(newUsedDriveBytes, 2)
         });
+
+        commit('SET_UPDATING_FOLDER_SIZES', false);
       })
-      // .catch(() => {
-      //   this.commit('app/SET_SNACKBAR', {
-      //     show: true,
-      //     color: 'error',
-      //     closeColor: 'white',
-      //     text: 'Failed to delete the folder!'
-      //   });
-      // });
+      .catch(() => {
+        this.commit('app/SET_SNACKBAR', {
+          show: true,
+          color: 'error',
+          closeColor: 'white',
+          text: 'Failed to delete the folder!'
+        });
+
+        commit('SET_UPDATING_FOLDER_SIZES', false);
+      });
   },
 
   trashFile ({ state, commit, dispatch }, file) {
@@ -319,17 +336,19 @@ export const actions = {
 
         return dispatch('deleteFile', file);
       })
-      // .catch(() => {
-      //   this.commit('app/SET_SNACKBAR', {
-      //     show: true,
-      //     color: 'error',
-      //     closeColor: 'white',
-      //     text: 'Failed to trash the file!'
-      //   });
-      // });
+      .catch(() => {
+        this.commit('app/SET_SNACKBAR', {
+          show: true,
+          color: 'error',
+          closeColor: 'white',
+          text: 'Failed to trash the file!'
+        });
+      });
   },
 
   deleteFile ({ state, commit }, file) {
+    commit('SET_UPDATING_FOLDER_SIZES', true);
+
     return axios.delete(`${apiUrl}/v1/drive/files/${file.id}`)
       .then(response => {
         // Update all parent folder sizes
@@ -359,6 +378,8 @@ export const actions = {
           attribute: 'formatted_used_drive_bytes',
           newValue: formatBytes(newUsedDriveBytes, 2)
         });
+
+        commit('SET_UPDATING_FOLDER_SIZES', false);
       })
       .catch(() => {
         this.commit('app/SET_SNACKBAR', {
@@ -367,6 +388,8 @@ export const actions = {
           closeColor: 'white',
           text: 'Failed to delete the file!'
         });
+
+        commit('SET_UPDATING_FOLDER_SIZES', false);
       });
   }
 };
