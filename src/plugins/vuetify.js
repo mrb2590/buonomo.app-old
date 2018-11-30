@@ -25,7 +25,8 @@ import {
   VSpeedDial,
   VMenu,
   VDialog,
-  VSnackbar
+  VSnackbar,
+  VChip
 } from 'vuetify';
 import 'vuetify/src/stylus/app.styl';
 
@@ -54,7 +55,8 @@ Vue.use(Vuetify, {
     VSpeedDial,
     VMenu,
     VDialog,
-    VSnackbar
+    VSnackbar,
+    VChip
   },
   theme: {
     primary: colors.green.base,

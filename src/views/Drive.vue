@@ -25,7 +25,8 @@
           >
           </FolderTree>
         </ul>
-        <div class="drive-storage">
+        <div class="drive-storage" v-if="openFolder">
+          {{ $store.state.drive.tree.total_folders}} Folders - {{ $store.state.drive.tree.total_files}} Files
           <v-progress-linear :value="this.$store.state.user.user.used_drive_bytes / this.$store.state.user.user.allocated_drive_bytes * 100"></v-progress-linear>
           Used
           <span v-show="!$store.state.drive.events.updatingFolderSizes">
@@ -57,7 +58,10 @@
             <v-layout row wrap v-if="openFolder">
 
               <v-flex xs12>
-                <div class="title explorer-title">Folders</div>
+                <div class="title explorer-title">
+                  <v-chip color="primary">{{ openFolder.folders_count }}</v-chip>
+                  Folders
+                </div>
                 <div class="body-1 explorer-title" v-if="!openFolder.folders.length">There are no folders to show.</div>
               </v-flex>
 
@@ -75,7 +79,10 @@
               </v-flex>
 
               <v-flex xs12>
-                <div class="title explorer-title">Files</div>
+                <div class="title explorer-title">
+                  <v-chip color="primary">{{ openFolder.files_count }}</v-chip>
+                  Files
+                </div>
                 <div class="body-1 explorer-title" v-if="!openFolder.files.length">There are no files to show.</div>
               </v-flex>
 
@@ -242,7 +249,7 @@ export default {
 
 <style>
 .sidebar > .folder-tree {
-  height: calc(100% - 57px);
+  height: calc(100% - 77px);
   overflow-y: auto;
   overflow-x: hidden;
 }
