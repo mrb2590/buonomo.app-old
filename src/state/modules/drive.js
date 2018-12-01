@@ -99,10 +99,30 @@ export const mutations = {
   UPDATE_FOLDER_NAME (state, { folder, newValue }) {
     folder.name = newValue;
 
+    // Update the folder's path
+    let pathParts = folder.path.split('/');
+    pathParts[pathParts.length - 1] = newValue;
+    folder.path = pathParts.join('/');
+
     // Sort parent folder in tree
     if (folder.folder_id) {
       let foundFolder = searchTree(state.tree, folder.folder_id);
       foundFolder.folders = sortByKey(foundFolder.folders, 'name');
+    }
+  },
+
+  UPDATE_FILE_NAME (state, { file, newValue }) {
+    file.name = newValue;
+
+    // Update the file's path
+    let pathParts = file.path.split('/');
+    pathParts[pathParts.length - 1] = newValue;
+    file.path = pathParts.join('/');
+
+    // Sort parent folder in tree
+    if (file.folder_id) {
+      let foundFolder = searchTree(state.tree, file.folder_id);
+      foundFolder.files = sortByKey(foundFolder.files, 'name');
     }
   },
 
@@ -253,9 +273,8 @@ export const actions = {
   renameFile ({ state, commit }, { file, name }) {
     return axios.patch(`${apiUrl}/v1/drive/files/${file.id}`, { name: name })
       .then(response => {
-        commit('SET_FILE_ATTRIBUTE', {
+        commit('UPDATE_FILE_NAME', {
           file: file,
-          attribute: 'name',
           newValue: response.data.data.name
         });
       })
