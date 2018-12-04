@@ -7,7 +7,7 @@
     </div>
     <div class="ftext">
       <div class="subheading" :title="folder.name">{{ folder.name }}</div>
-      <div class="caption">{{ folder.formatted_size }}</div>
+      <div class="caption">{{ folder.formatted_size }} - {{ folder.total_folders }} Folders - {{ folder.total_files }} Files</div>
     </div>
     <div class="fbtn">
       <v-menu

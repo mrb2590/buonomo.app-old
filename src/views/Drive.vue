@@ -60,7 +60,7 @@
               <v-flex xs12>
                 <div class="title explorer-title">
                   <v-chip color="primary">{{ openFolder.folders_count }}</v-chip>
-                  Folders
+                  Folder<span v-if="openFolder.folders_count !== 1">s</span>
                 </div>
                 <div class="body-1 explorer-title" v-if="!openFolder.folders.length">There are no folders to show.</div>
               </v-flex>
@@ -81,7 +81,7 @@
               <v-flex xs12>
                 <div class="title explorer-title">
                   <v-chip color="primary">{{ openFolder.files_count }}</v-chip>
-                  Files
+                  File<span v-if="openFolder.files_count !== 1">s</span>
                 </div>
                 <div class="body-1 explorer-title" v-if="!openFolder.files.length">There are no files to show.</div>
               </v-flex>

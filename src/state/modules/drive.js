@@ -70,18 +70,27 @@ export const mutations = {
   ADD_FOLDER_TO_OPEN_FOLDER (state, folder) {
     state.openFolder.folders.push(lang.cloneDeep(folder));
     state.openFolder.folders = sortByKey(state.openFolder.folders, 'name');
+
+    // Update folder count for each parent
+    recursiveForEachParent(state.tree, folder.id, (parentFolder) => {
+      parentFolder.total_folders++;
+      parentFolder.folders_count++;
+    });
   },
 
   ADD_FILE_TO_OPEN_FOLDER (state, file) {
     state.openFolder.files.push(lang.cloneDeep(file));
     state.openFolder.files = sortByKey(state.openFolder.files, 'name');
 
-    // Update parent folder sizes
+    // Update parent folder sizes and file counts
     state.events.updatingFolderSizes = true;
 
     recursiveForEachParent(state.tree, file.folder_id, (parentFolder) => {
       parentFolder.size += file.size;
       parentFolder.formatted_size = formatBytes(parentFolder.size);
+
+      parentFolder.total_files++;
+      parentFolder.files_count++;
     });
 
     state.events.updatingFolderSizes = false;
@@ -130,6 +139,12 @@ export const mutations = {
     for (var i = 0; i < state.openFolder.folders.length; i++) {
       if (state.openFolder.folders[i].id === folder.id) {
         state.openFolder.folders.splice(i, 1);
+
+        // Update folder count for each parent
+        recursiveForEachParent(state.tree, folder.id, (parentFolder) => {
+          parentFolder.total_folders--;
+          parentFolder.folders_count--;
+        });
       }
     }
   },
@@ -138,6 +153,12 @@ export const mutations = {
     for (var i = 0; i < state.openFolder.files.length; i++) {
       if (state.openFolder.files[i].id === file.id) {
         state.openFolder.files.splice(i, 1);
+
+        // Update files count for each parent
+        recursiveForEachParent(state.tree, file.folder_id, (parentFolder) => {
+          parentFolder.total_files--;
+          parentFolder.files_count--;
+        });
       }
     }
   }
@@ -482,9 +503,11 @@ let recursiveForEachParent = (tree, folderId, callback) => {
 
 let formatBytes = (bytes, decimals) => {
   if (bytes === 0) return '0 Bytes';
+
   let k = 1024;
   let dm = decimals <= 0 ? 0 : decimals || 2;
   let sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
   let i = Math.floor(Math.log(bytes) / Math.log(k));
+
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 };
