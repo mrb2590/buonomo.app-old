@@ -108,6 +108,9 @@ export const mutations = {
   UPDATE_FOLDER_NAME (state, { folder, newValue }) {
     folder.name = newValue;
 
+    // TODO: Sort all parent and child folder and file paths to include the new
+    // name of the folder....
+
     // Update the folder's path
     let pathParts = folder.path.split('/');
     pathParts[pathParts.length - 1] = newValue;
