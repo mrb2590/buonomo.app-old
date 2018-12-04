@@ -41,6 +41,18 @@
         <div class="subheading font-weight-bold">Path</div>
         <div class="body-1">{{ folder.path }}</div>
 
+        <div class="subheading font-weight-bold">Files</div>
+        <div class="body-1">{{ folder.files_count }}</div>
+
+        <div class="subheading font-weight-bold">Total Files</div>
+        <div class="body-1">{{ folder.total_files }}</div>
+
+        <div class="subheading font-weight-bold">Folders</div>
+        <div class="body-1">{{ folder.folders_count }}</div>
+
+        <div class="subheading font-weight-bold">Total Folders</div>
+        <div class="body-1">{{ folder.total_folders }}</div>
+
         <div class="subheading font-weight-bold">Owned by</div>
         <div class="body-1">{{ folder.owned_by.first_name }} {{ folder.owned_by.last_name }}</div>
 

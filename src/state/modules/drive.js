@@ -72,7 +72,7 @@ export const mutations = {
     state.openFolder.folders = sortByKey(state.openFolder.folders, 'name');
 
     // Update folder count for each parent
-    recursiveForEachParent(state.tree, folder.id, (parentFolder) => {
+    recursiveForEachParent(state.tree, folder.folder_id, (parentFolder) => {
       parentFolder.total_folders++;
       parentFolder.folders_count++;
     });
@@ -138,13 +138,13 @@ export const mutations = {
   REMOVE_FOLDER_FROM_OPEN_FOLDER (state, folder) {
     for (var i = 0; i < state.openFolder.folders.length; i++) {
       if (state.openFolder.folders[i].id === folder.id) {
-        state.openFolder.folders.splice(i, 1);
-
         // Update folder count for each parent
-        recursiveForEachParent(state.tree, folder.id, (parentFolder) => {
+        recursiveForEachParent(state.tree, folder.folder_id, (parentFolder) => {
           parentFolder.total_folders--;
           parentFolder.folders_count--;
         });
+
+        state.openFolder.folders.splice(i, 1);
       }
     }
   },
@@ -152,13 +152,13 @@ export const mutations = {
   REMOVE_FILE_FROM_OPEN_FOLDER (state, file) {
     for (var i = 0; i < state.openFolder.files.length; i++) {
       if (state.openFolder.files[i].id === file.id) {
-        state.openFolder.files.splice(i, 1);
-
         // Update files count for each parent
         recursiveForEachParent(state.tree, file.folder_id, (parentFolder) => {
           parentFolder.total_files--;
           parentFolder.files_count--;
         });
+
+        state.openFolder.files.splice(i, 1);
       }
     }
   }
