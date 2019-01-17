@@ -4,12 +4,6 @@
       <v-toolbar-title v-if="folder" :title="folder.name">{{ folder.name }}</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn-toggle class="elevation-2">
-        <v-btn flat>
-          <v-icon>chevron_left</v-icon>
-        </v-btn>
-        <v-btn flat>
-          <v-icon>chevron_right</v-icon>
-        </v-btn>
         <v-btn
           flat
           v-if="folder"

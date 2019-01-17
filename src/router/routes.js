@@ -58,6 +58,15 @@ export default [
     }
   },
   {
+    path: '/surveillance',
+    name: 'surveillance',
+    component: () => lazyLoadView(import(/* webpackChunkName: "surveillance" */ '../views/Surveillance')),
+    meta: {
+      displayName: 'Surveillance',
+      authRequired: true
+    }
+  },
+  {
     path: '/signout',
     name: 'signout',
     meta: {
